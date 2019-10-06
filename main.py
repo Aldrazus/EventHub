@@ -1,26 +1,16 @@
 from flask import Flask, render_template, request, session, url_for, redirect, g
-import pymysql.cursors
+from blueprints.user_auth import user_auth
+
 
 
 app = Flask(__name__)
+app.register_blueprint(user_auth)
 
-conn = pymysql.connect(host='localhost',
-                       user='root',
-                       password='password',
-                       db='event_hub',
-                       charset='utf8mb4',
-                       cursorclass=pymysql.cursors.DictCursor)
-
-@app.route('/')
-def test():
-    name = 'Alberto'
-    data = None
-    with conn.cursor() as cursor:
-        query = 'SELECT * FROM person WHERE name = %s'
-        cursor.execute(query, (name))
-        data = cursor.fetchone()
-
-    return (f'Hello World! {data["name"]} is {data["age"]} years old')
+@app.before_request
+def before_request():
+    g.user = None
+    if 'username' in session:
+        g.user = session['username']
 
 app.secret_key = 'not a good secret'
 

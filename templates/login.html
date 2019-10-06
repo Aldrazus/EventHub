@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<head>
+    <title>Event Hub | Login</title>
+</head>
+<body>
+    <div class="login">
+        <div class="tab-bar">
+            <button class="tab" onclick="openUser('student')">Student</button>
+            <button class="tab" onclick="openUser('host')">Host</button>
+        </div>
+        <div id="student" class="user">
+            <h2>Login As Student</h2>
+            <form action='/auth-student' method='POST'>
+                <input type="text" name="username" placeholder="Username">
+                <input type="password" name="password" placeholder="Password">
+                <input type="submit" value="Log In">
+            </form>
+        </div>
+        <div id="host" class="user">
+            <h2>Login As Host</h2>
+            <form action='/auth-host' method='POST'>
+                <input type="text" name="username" placeholder="Username">
+                <input type="password" name="password" placeholder="Password">
+                <input type="submit" value="Log In">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openUser(userType) {
+            var i;
+            var x = document.getElementsByClassName("user");
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            document.getElementById(userType).style.display = "block";
+        }
+    </script>
+</body>
