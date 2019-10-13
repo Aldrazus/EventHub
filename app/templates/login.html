@@ -1,8 +1,7 @@
-<!DOCTYPE html>
-<head>
-    <title>Event Hub | Login</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+
+{% block content %}
     <div class="login">
         <div class="tab-bar">
             <button class="tab" onclick="openUser('student')">Student</button>
@@ -36,4 +35,4 @@
             document.getElementById(userType).style.display = "block";
         }
     </script>
-</body>
+{% endblock %}
