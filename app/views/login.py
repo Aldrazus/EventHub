@@ -1,14 +1,15 @@
 from flask import Blueprint, render_template, request, session, url_for, redirect, g
 from app.models.auth import hash_password, check_password
 import pymysql.cursors
+import config
 
 mod = Blueprint('login', __name__,
                         template_folder='templates')
 
-conn = pymysql.connect(host='localhost',
-                       user='root',
-                       password='password',
-                       db='event_hub',
+conn = pymysql.connect(host=config.DB_HOST,
+                       user=config.DB_USER,
+                       password=config.DB_PASSWORD,
+                       db=config.DB_NAME,
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 

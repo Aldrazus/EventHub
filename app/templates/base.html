@@ -1,0 +1,16 @@
+<html>
+    <head>
+        {% if title %}
+        <title>{{ title }} - Event Hub</title>
+        {% else %}
+        <title>Welcome to Event Hub</title>
+        {% endif %}
+    </head>
+    <body>
+        <div class="navbar">
+            <a href="/" class="home">Home</a>
+        </div>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+</html>
