@@ -4,12 +4,14 @@
 
 - Python 3
 - Flask
-- PyMySQL
+- Flask-Login
+- Flask-Migrate
+- Flask-SQLAlchemy
+- Flask-WTF & WTForms
+- python-dotenv
 - MySQL Server
 
 ## How to Run
 
-1. Configure your MySQL server. Make sure the user is 'root' and the password is 'password'.
-2. Run the MySQL script named _testdb.sql_. This creates a database named _event_hub_, creates a table named _Person_ with fields _name_ and _age_, adds an entry to this table, and queries for this entry. **Make sure this works before proceeding to the next step.**
-3.  In the command line, go to the _EventHub_ directory and enter `python main.py`.
-4.  In your web browser, go to `localhost:5000`. You should see text that says "_Hello World! Alberto's is 21 years old_".
+1. Install the dependencies by entering `pip install -r requirements.txt`. If `requirements.txt` is not in the current directory, install each package manually by entering `pip install <package-name>`.
+2. To run the Flask app, enter `flask run`.
