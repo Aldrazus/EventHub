@@ -16,7 +16,7 @@ mod = Blueprint('auth', __name__,
 @mod.route('/')
 @login_required
 def index():
-    return "Hello world!"
+    return render_template("home.html", title="Home")
 
 @mod.route('/login', methods=['GET', 'POST'])
 def login():
@@ -43,7 +43,7 @@ def register():
         return redirect('/')
     form = RegisterForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data)
+        user = User(username=form.username.data, role="student")
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()

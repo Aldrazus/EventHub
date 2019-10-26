@@ -7,7 +7,7 @@
         <p>
             {{ form.username.label }}<br>
             {{ form.username(size=32) }}<br>
-            {% for err in form.username.errors %}
+            {% for error in form.username.errors %}
             <span style="color: red;">{{ error }}</span>
             {% endfor %}
         </p>
@@ -27,5 +27,5 @@
         </p>
         <p>{{ form.submit() }}</p>
     </form>
-    <p>Already have an acount? <a href="{{ url_for('auth.register') }}">Click to Log In!</a></p>
+    <p>Already have an acount? <a href="{{ url_for('auth.login') }}">Click to Log In!</a></p>
 {% endblock %}
