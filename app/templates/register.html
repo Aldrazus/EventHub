@@ -5,6 +5,15 @@
     <form action="" method="POST">
         {{ form.hidden_tag() }}
         <p>
+            {% for subfield in form.role %}
+                <tr>
+                    <td>{{ subfield }}</td>
+                    <td>{{ subfield.label }}</td>
+                </tr>
+            {% endfor %}
+        </p>
+
+        <p>
             {{ form.username.label }}<br>
             {{ form.username(size=32) }}<br>
             {% for error in form.username.errors %}
