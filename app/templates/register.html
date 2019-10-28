@@ -27,6 +27,15 @@
                         <span style="color: red;">{{ error }}</span>
                     {% endfor %}
                 </div>
+                <div class="form-group">
+                    Register as:
+                    {% for subfield in form.role %}
+                        <tr>
+                            <td>{{ subfield }}</td>
+                            <td>{{ subfield.label }}</td>
+                        </tr>
+                    {% endfor %}
+                </div>
             </fieldset>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
