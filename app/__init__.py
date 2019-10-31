@@ -18,10 +18,11 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'auth.login'
 
 #import router packages containing blueprints
-from app.views import auth
+from app.views import auth, organizer
 
 #import models
 from app import models
 
 #register blueprints to flask app
 app.register_blueprint(auth.mod)
+app.register_blueprint(organizer.mod)
