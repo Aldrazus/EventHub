@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, RadioField, FileField, TextAreaField
+from wtforms.fields.html5 import DateTimeLocalField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Required, regexp
 from app.models import User
 import re
@@ -29,10 +30,11 @@ class RegisterForm(FlaskForm):
 class PostForm(FlaskForm):
     event_name = StringField('Event Name', validators=[DataRequired()])
     event_desc = TextAreaField('Event Description')
-    image = FileField('Image File', [regexp(u'^[^/\\\]\.jpg$')])
+    image = FileField('Image File')#[regexp(u'^[^/\\\]\.jpg$')])
     location = StringField('Location', validators=[DataRequired()])
-    start = StringField('Start Time', validators=[DataRequired()])
-    end = StringField('End Time', validators=[DataRequired()])
+    #start = StringField('Start Time', validators=[DataRequired()])
+    start = DateTimeLocalField('Start Time', format='%Y-%m-%dT%H:%M')
+    end = DateTimeLocalField('End Time', format='%Y-%m-%dT%H:%M')
     submit = SubmitField('Post Event')
 
     def validate_image(self, image):
