@@ -34,6 +34,10 @@
                             <a class="nav-item nav-link" href="{{ url_for('auth.login') }}">Login</a>
                             <a class="nav-item nav-link" href="{{ url_for('auth.register') }}">Register</a>
                         {% else %}
+                            <a class="nav-item nav-link" href="{{ url_for('home.search') }}">Search</a>
+                            {% if current_user.role == "Event Organizer" %}
+                            <a class="nav-item nav-link" href="{{ url_for('organizer.post') }}">Post</a>
+                            {% endif %}
                             <a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
                         {% endif %}
                     </div>
