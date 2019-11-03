@@ -1,3 +1,4 @@
+from flask import request
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, RadioField, FileField, TextAreaField
 from wtforms.fields.html5 import DateTimeLocalField
@@ -41,6 +42,13 @@ class PostForm(FlaskForm):
         if image.data:
             image.data = re.sub(r'[^a-z0-9_.-]', '_', image.data)
 
+class SearchForm(FlaskForm):
+    q = StringField('Search', validators=[DataRequired()])
+    submit = SubmitField('Search')
 
-
-    
+    def __init__(self, *args, **kwargs):
+        if 'formdata' not in kwargs:
+            kwargs['formdata'] = request.args
+        if 'csrf_enabled' not in kwargs:
+            kwargs['csrf_enabled'] = False
+        super(SearchForm, self).__init__(*args, **kwargs)

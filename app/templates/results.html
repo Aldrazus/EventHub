@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Search Results</h1>
+{% for event in events %}
+    <p>{{event.event_name}}</p>
+    <p>{{event.description}}</p>
+{% endfor %}
+{% endblock %}

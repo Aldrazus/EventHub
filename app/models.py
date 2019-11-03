@@ -1,6 +1,48 @@
 from flask_login import UserMixin
 from app import login_manager, db
+from app.search import add_to_index, remove_from_index, query_index
 from werkzeug.security import generate_password_hash, check_password_hash
+
+class Searchable():
+
+    @classmethod
+    def search(cls, expression, page, per_page):
+        ids, total = query_index(cls.__tablename__, expression, page, per_page)
+        if total == 0:
+            return cls.query.filter_by(id=0), 0
+
+        when = [(ids[i], i) for i in range(len(ids))]
+        return cls.query.filter(cls.id.in_(ids)).order_by(
+            db.case(when, value=cls.id)), total
+    
+    @classmethod
+    def before_commit(cls, session):
+        session._changes = {
+            'add': list(session.new),
+            'update': list(session.dirty),
+            'delete': list(sesion.deleted)
+        }
+
+    @classmethod
+    def after_commit(cls, session):
+        for obj in session._changes['add']:
+            if isinstance(obj, Searchable):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['update']:
+            if isinstance(obj, Searchable):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['delete']:
+            if isinstance(obj, Searchable):
+                add_to_index(obj.__tablename__, obj)
+        session._changes = None
+
+    @classmethod
+    def reindex(cls):
+        for obj in cls.query:
+            add_to_index(cls.__tablename__, obj)
+
+db.event.listen(db.session, 'before_commit', Searchable.before_commit)
+db.event.listen(db.session, 'after_commit', Searchable.after_commit)
 
 #some code from Miguel Grinberg's blog
 #https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins
@@ -22,7 +64,9 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
-class Event(UserMixin, db.Model):
+class Event(Searchable, UserMixin, db.Model):
+    __searchable__ = ['event_name', 'description'] 
+    #TODO: include times, location, and keywords as searchables
     id = db.Column(db.Integer, primary_key=True)
     event_name = db.Column(db.String(120), index=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
