@@ -22,7 +22,7 @@ def search():
     if not form.validate():
         return render_template('search.html', title='Search', form=form)
     page = request.args.get('page', 1, type=int)
-    posts, total = Event.search(form.q.data, page, current_app.config['EVENTS_PER_PAGE'])
+    events, total = Event.search(form.q.data, page, current_app.config['EVENTS_PER_PAGE'])
     next_url = url_for('home.search', q=form.q.data, page=page + 1) \
         if total > page * current_app.config['EVENTS_PER_PAGE'] else None
     prev_url = url_for('home.search', q=form.q.data, page=page - 1) \
