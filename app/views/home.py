@@ -31,3 +31,27 @@ def search():
     return render_template('results.html', title='Search Results', events=events,
                             next_url=next_url, prev_url=prev_url)
     
+
+@mod.route('/follow/<event_id>')
+@login_required
+def follow(event_id):
+    event = Event.query.filter_by(id=event_id).first()
+    if event is None:
+        flash('Event {} - {} not found.'.format(event_id, event.event_name))
+        return redirect(url_for('auth.index'))
+    current_user.follow(event)
+    db.session.commit()
+    flash('You are following this event: {}'.format(event.event_name))
+    return redirect(url_for('auth.index'))
+
+@mod.route('/unfollow/<event_id>')
+@login_required
+def unfollow(event_id):
+    event = Event.query.filter_by(id=event_id).first()
+    if event is None:
+        flash('Event {} - {} not found.'.format(event_id, event.event_name))
+        return redirect(url_for('auth.index'))
+    current_user.unfollow(event)
+    db.session.commit()
+    flash('You have unfollowed this event: {}'.format(event.event_name))
+    return redirect(url_for('auth.index'))

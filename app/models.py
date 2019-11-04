@@ -71,8 +71,7 @@ class User(UserMixin, db.Model):
     #many to many followed relationship
     followed = db.relationship(
         'Event', secondary=followers,
-        primaryjoin=(followers.c.follower_id == id),
-        back_populates='followed_by'
+        backref=db.backref('followers',lazy='dynamic'), lazy='dynamic'
     )
 
     #check if user is following event
@@ -107,13 +106,6 @@ class Event(Searchable, UserMixin, db.Model):
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
     location = db.Column(db.String(128))   
-
-    #many to many followed_by relationship
-    followed_by = db.relationship(
-        'User', secondary=followers,
-        secondaryjoin=(followers.c.event_id == id),
-        back_populates='followed'
-    ) 
 
 class EventStats(UserMixin, db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)

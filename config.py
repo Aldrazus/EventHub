@@ -24,4 +24,3 @@ class Config():
 
     #events per page
     EVENTS_PER_PAGE = 5
-    

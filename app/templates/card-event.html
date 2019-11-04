@@ -1,15 +1,11 @@
 <div class="card-event">
     <div class="card-content">
-        <h1>EVENT NAME</h1>
+        <h1>{{ event.event_name }}</h1>
         <h4>Hosted by HOST NAME</h4>
-        <p>EVENT DESCRIPTION: Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-             sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-             Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip 
-             ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit 
-             esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non 
-             proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        <p> {{ event.description }}
         </p>
-        <p>Date: </p>
-        <p>Location</p>
+        <p>Date: {{ moment(event.start_time).format('LLL') }}</p>
+        <p>Location: {{ event.location }}</p>
+        <a href={{url_for('home.follow', event_id=event.id)}}>Follow</a>
     </div>
 </div>

@@ -17,7 +17,7 @@ class RegisterForm(FlaskForm):
     role = RadioField('Role', choices=[
         ('Student', 'Student'),
         ('Event Organizer', 'Event Organizer')],
-        default='Student', validators=[Required()])
+        default='Student', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField(
