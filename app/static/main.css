@@ -4,6 +4,12 @@ body {
     color: #333333;
     margin-top: 5rem;
   }
+
+#app-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
   
   h1, h2, h3, h4, h5, h6 {
     color: #444444;
@@ -79,3 +85,28 @@ body {
   .account-heading {
     font-size: 2.5rem;
   }
+
+/*
+  EVENT CARDS
+*/
+.container-events {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-event {
+  width: 100%;
+  height: auto;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 3px 5px 5px #c4c4c4;
+  transition: ease-in-out 0.2s;
+}
+
+.card-event:hover {
+  transform: scale(1.01)
+}

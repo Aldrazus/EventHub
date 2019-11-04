@@ -3,8 +3,15 @@ from app import login_manager, db
 from app.search import add_to_index, remove_from_index, query_index
 from werkzeug.security import generate_password_hash, check_password_hash
 
+#many to many association table for user following events
+followers = db.Table('followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('event_id', db.Integer, db.ForeignKey('event.id'))
+)
+
 class Searchable():
 
+    #TODO: move to Event and User classes
     @classmethod
     def search(cls, expression, page, per_page):
         ids, total = query_index(cls.__tablename__, expression, page, per_page)
@@ -15,6 +22,7 @@ class Searchable():
         return cls.query.filter(cls.id.in_(ids)).order_by(
             db.case(when, value=cls.id)), total
     
+    #TODO: remove dictionary, strip down, and move to search
     @classmethod
     def before_commit(cls, session):
         session._changes = {
@@ -23,6 +31,7 @@ class Searchable():
             'delete': list(session.deleted)
         }
 
+    #TODO: move to search
     @classmethod
     def after_commit(cls, session):
         for obj in session._changes['add']:
@@ -33,9 +42,11 @@ class Searchable():
                 add_to_index(obj.__tablename__, obj)
         for obj in session._changes['delete']:
             if isinstance(obj, Searchable):
-                add_to_index(obj.__tablename__, obj)
+                remove_from_index(obj.__tablename__, obj)
         session._changes = None
 
+
+    #dont need this
     @classmethod
     def reindex(cls):
         for obj in cls.query:
@@ -57,6 +68,28 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(64))
     role = db.Column(db.String(64))
 
+    #many to many followed relationship
+    followed = db.relationship(
+        'Event', secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        back_populates='followed_by'
+    )
+
+    #check if user is following event
+    def is_following(self, event):
+        return self.followed.filter(followers.c.event_id == event.id).count() > 0
+    
+    #follow event if not already followed
+    def follow(self, event):
+        if not self.is_following(event):
+            self.followed.append(event)
+
+    #unfollow event if user following event
+    def unfollow(self, event):
+        if self.is_following(event):
+            self.followed.remove(event)
+
+    
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -73,11 +106,19 @@ class Event(Searchable, UserMixin, db.Model):
     description = db.Column(db.String(120))
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
-    location = db.Column(db.String(128))    
+    location = db.Column(db.String(128))   
+
+    #many to many followed_by relationship
+    followed_by = db.relationship(
+        'User', secondary=followers,
+        secondaryjoin=(followers.c.event_id == id),
+        back_populates='followed'
+    ) 
 
 class EventStats(UserMixin, db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)
-    
+
+
 
 @login_manager.user_loader
 def load_user(id):
