@@ -39,3 +39,37 @@ def post():
         flash('hey this works')
         return redirect(url_for('organizer.post'))
     return render_template("post.html", title='Post Event', form=form)
+
+# driver 
+@mod.route('/user/<string:username>/posts')
+def user_posts(username):
+    user = {
+        'username': username,
+        'about': 'This is an example About Me section.',
+        'img_file': url_for('static', filename='profile_pics/default.jpg'),
+        'interests': [
+            'Computer Science',
+            'Sports',
+            'Basketball',
+            'Movies'
+        ]
+    }
+    posts = []
+    return render_template("posts.html", user=user, posts=posts)
+
+# WIP
+@mod.route('/user/<string:username>/about')
+def about(username):
+    user = {
+        'username': username,
+        'about': 'This is an example About Me section.',
+        'img_file': url_for('static', filename='profile_pics/default.jpg'),
+        'interests': [
+            'Computer Science',
+            'Sports',
+            'Basketball',
+            'Movies'
+        ]
+    }
+    info = {}
+    return render_template('about.html', user=user, info=info)

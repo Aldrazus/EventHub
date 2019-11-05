@@ -53,3 +53,28 @@ def register():
         flash('successful registration')
         return redirect(url_for('auth.login'))
     return render_template('register.html', title="Register", form=form)
+
+@mod.route('/settings', methods=['GET', 'POST'])
+@login_required
+def settings():
+    return render_template('settings.html')
+
+@mod.route('/user/<string:username>', methods=['GET'])
+@login_required
+def user(username):
+    # Get info from db based on username, send to template
+    user_info = {
+        'username': username,
+        'about': 'This is an example About Me section.',
+        'img_file': url_for('static', filename='profile_pics/default.jpg'),
+        'interests': [
+            'Computer Science',
+            'Sports',
+            'Basketball',
+            'Movies'
+        ]
+    }
+    # 10 most recent events, with option to show more potentially added later on
+    # Should send associated event object to link that in the activity
+    activity = ["Registered for event A", "Created event B"]
+    return render_template('user.html', title=username, user=user_info, activity=activity)

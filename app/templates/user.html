@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content_full %}
+    <div class="col-md-12">
+{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <div class="banner bg-dark">
+        <div class="row border-bottom" style="margin-top: -15px; background-color: rgb(237,241,245)">
+            <div class="col-md-3 align-self-baseline">
+                <img class="img-fluid img-thumbnail" src= "{{ user.img_file }}" />
+            </div>
+            <div class="col-md-auto align-self-baseline" style="padding-bottom: 0.5rem;">
+                <h1><a class="text-dark" href="">{{ user.username }}</a></h1>
+            </div>
+            <div class="col-md-3 ml-auto text-center align-self-end">
+                <h4 class="card bg-light">{{current_user.role}}</h4>
+            </div>
+        </div>
+
+        <!-- Nav Tabs -->
+        <div class="row nav nav-tab nav-justified justify-content-center align-items-end">
+            <a class="nav-item nav-link text-light" href="{{ url_for('auth.user', username=user.username) }}">Overview</a>
+            {% if current_user.role == "Event Organizer" %}
+                <a class="nav-item nav-link text-light" href="{{ url_for('organizer.user_posts', username=user.username) }}">Events</a>
+            {% endif %}
+                <a class="nav-item nav-link text-light" href="{{ url_for('organizer.about', username=user.username) }}">About</a>
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        {% block user_content %}
+
+        <div class="col-md-5 ml-3">
+            <div class="row mb-3">
+                <div class="col-md-12 card bg-light">
+                    <h4 class="text-center border-bottom">About Me</h4>
+                    <p>{{user.about}}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 card bg-light">
+                    <h4 class="text-center border-bottom">Interests</h4>
+                    {% for item in user.interests %}
+                    <p>{{item}}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 ml-5 card bg-light">
+            <h4 class="text-center border-bottom mb-3">Recent Activity:</h4>
+
+            {% for item in activity %}
+                <div class="row mb-3">
+                    <div class="col-md-10 offset-md-1 card" style="background: rgb(237,241,245);">
+                        {{item}}
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+
+        {% endblock %}
+
+    </div>
+</div>
+
+{% endblock %}

@@ -36,9 +36,22 @@
                         {% else %}
                             <a class="nav-item nav-link" href="{{ url_for('home.search') }}">Search</a>
                             {% if current_user.role == "Event Organizer" %}
-                            <a class="nav-item nav-link" href="{{ url_for('organizer.post') }}">Post</a>
+                                <a class="nav-item nav-link" href="{{ url_for('organizer.post') }}">Post</a>
                             {% endif %}
-                            <a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+                            <!-- Account Settings/Logout Dropdown -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+                                    Account
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ url_for('auth.user', username=current_user.username) }}">Your Profile</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{{ url_for('auth.settings') }}">Account Settings</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a>
+                                </div>
+                            </li>
+                            <!-- <a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">Logout</a> -->
                         {% endif %}
                     </div>
                 </div>
@@ -55,9 +68,14 @@
             {% endwith %}
 
         <main role="main" class="container">
-                <div class="col-md-8">
-                {% block content %}{% endblock %}
+            <div name="content-space" class="col-md-12">
+                {% block content_full %}
+                <div class="col-md-8 offset-md-2">
+                {% endblock %}
+                {% block content %}
+                {% endblock %}
                 </div>
+            </div>
         </main>
 
         <!-- Optional JavaScript -->
