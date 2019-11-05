@@ -50,8 +50,8 @@ def user_posts(username):
 @mod.route('/user/<string:username>/followed')
 @login_required
 def followed(username):
-    followed_events = current_user.followed.all()
-    return render_template("followed_events.html", events=followed_events)
+    followed_events = current_user.get_followed_events()
+    return render_template("followed_events.html", events=followed_events) #rename this to something better like event_info
 
 
 # WIP
