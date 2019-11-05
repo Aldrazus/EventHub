@@ -3,6 +3,7 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from elasticsearch import Elasticsearch
+from flask_moment import Moment
 from config import Config
 
 
@@ -10,11 +11,15 @@ db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
+moment = Moment()
 
-def create_app(config_cls=Config):
+def create_app(config_cls=Config, testing=False):
     #setting up flask app with config
     app = Flask(__name__)
     app.config.from_object(config_cls)
+
+    if testing:
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
 
     #sqlalchemy db
     db.init_app(app)
@@ -22,6 +27,9 @@ def create_app(config_cls=Config):
 
     #login manager
     login_manager.init_app(app)
+
+    #moment
+    moment.init_app(app)
 
 
     #import router packages containing blueprints

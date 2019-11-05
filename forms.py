@@ -1,6 +1,7 @@
 from flask import request
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, RadioField, FileField, TextAreaField
+#from flask_wtf.file import FileField, FileAllowed, FileRequired
+from wtforms import StringField, PasswordField, SubmitField, RadioField, TextAreaField
 from wtforms.fields.html5 import DateTimeLocalField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Required, regexp
 from app.models import User
@@ -16,7 +17,7 @@ class RegisterForm(FlaskForm):
     role = RadioField('Role', choices=[
         ('Student', 'Student'),
         ('Event Organizer', 'Event Organizer')],
-        default='Student', validators=[Required()])
+        default='Student', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField(
@@ -31,16 +32,18 @@ class RegisterForm(FlaskForm):
 class PostForm(FlaskForm):
     event_name = StringField('Event Name', validators=[DataRequired()])
     event_desc = TextAreaField('Event Description')
-    image = FileField('Image File')#[regexp(u'^[^/\\\]\.jpg$')])
+
+    #code from https://flask-wtf.readthedocs.io/en/latest/form.html#module-flask_wtf.file
+    #image = FileField('Image File', validators=[
+    #    FileRequired('hey this is required'),
+    #    FileAllowed(['jpg', 'png'], 'Images only')
+    #])
+
     location = StringField('Location', validators=[DataRequired()])
     #start = StringField('Start Time', validators=[DataRequired()])
     start = DateTimeLocalField('Start Time', format='%Y-%m-%dT%H:%M')
     end = DateTimeLocalField('End Time', format='%Y-%m-%dT%H:%M')
     submit = SubmitField('Post Event')
-
-    def validate_image(self, image):
-        if image.data:
-            image.data = re.sub(r'[^a-z0-9_.-]', '_', image.data)
 
 class SearchForm(FlaskForm):
     q = StringField('Search', validators=[DataRequired()])

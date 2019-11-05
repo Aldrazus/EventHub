@@ -4,6 +4,12 @@ body {
     color: #333333;
     margin-top: 5rem;
   }
+
+#app-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
   
   h1, h2, h3, h4, h5, h6 {
     color: #444444;
@@ -89,6 +95,7 @@ body {
     font-size: 2.5rem;
   }
 
+<<<<<<< HEAD
   .account-section {
     background: gray;
     padding: 10px 20px;
@@ -96,3 +103,30 @@ body {
     border-radius: 3px;
     margin-bottom: 20px;
   }
+=======
+/*
+  EVENT CARDS
+*/
+.container-events {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-event {
+  width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 3px 5px 5px #c4c4c4;
+  transition: ease-in-out 0.2s;
+}
+
+.card-event:hover {
+  transform: scale(1.01)
+}
+>>>>>>> d97ccb1d596e987275cebb865bbcb4e5d5ff32b2

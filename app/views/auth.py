@@ -38,7 +38,7 @@ def login():
 @mod.route('/logout')
 def logout():
     logout_user()
-    return redirect('/')
+    return redirect(url_for('auth.login'))
 
 @mod.route('/register', methods=['GET', 'POST'])
 def register():
