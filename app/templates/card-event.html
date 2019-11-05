@@ -8,5 +8,8 @@
         <p>Location: {{ event.location }}</p>
         <a href={{url_for('home.follow', event_id=event.id)}}>Follow</a>
         <a href={{url_for('home.unfollow', event_id=event.id)}}>Unfollow</a>
+	<br>
+
+	<a href={{url_for('home.eventdetail', event_id=event.id)}}>For more detail</a>
     </div>
 </div>
