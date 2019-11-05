@@ -74,6 +74,9 @@ class User(UserMixin, db.Model):
         backref=db.backref('followers',lazy='dynamic'), lazy='dynamic'
     )
 
+    #one to many event posts
+    events = db.relationship('Event', backref='owner', lazy='dynamic')
+
     #check if user is following event
     def is_following(self, event):
         return self.followed.filter(followers.c.event_id == event.id).count() > 0
@@ -88,6 +91,10 @@ class User(UserMixin, db.Model):
         if self.is_following(event):
             self.followed.remove(event)
 
+    #returns tuple of (User, Event) fields. Index 0 for user fields, 1 for event fields
+    def get_all_events(self):
+        all_events = db.session.query(User, Event).join(Event)
+        return all_events.filter_by(id=self.id)
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

@@ -25,6 +25,7 @@
             {% if current_user.role == "Event Organizer" %}
                 <a class="nav-item nav-link text-light" href="{{ url_for('organizer.user_posts', username=user.username) }}">Events</a>
             {% endif %}
+            <a class="nav-item nav-link text-light" href="{{ url_for('organizer.followed', username=user.username) }}">Followed Events</a>
                 <a class="nav-item nav-link text-light" href="{{ url_for('organizer.about', username=user.username) }}">About</a>
         </div>
 

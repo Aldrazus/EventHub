@@ -42,7 +42,10 @@ def follow(event_id):
     current_user.follow(event)
     db.session.commit()
     flash('You are following this event: {}'.format(event.event_name))
-    return redirect(url_for('auth.index'))
+    next_page = request.args.get('next')
+    if not next_page or url_parse(next_page).netloc != '':
+        next_page = url_for('auth.index')
+    return redirect(next_page)
 
 @mod.route('/unfollow/<event_id>')
 @login_required
@@ -54,4 +57,6 @@ def unfollow(event_id):
     current_user.unfollow(event)
     db.session.commit()
     flash('You have unfollowed this event: {}'.format(event.event_name))
-    return redirect(url_for('auth.index'))
+    if not next_page or url_parse(next_page).netloc != '':
+        next_page = url_for('auth.index')
+    return redirect(next_page)
