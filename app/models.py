@@ -109,10 +109,14 @@ class Event(Searchable, UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     event_name = db.Column(db.String(120), index=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    #breif summary
     description = db.Column(db.String(120))
+    #full content
+    #content = db.Column(db.Text)
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
-    location = db.Column(db.String(128))   
+    location = db.Column(db.String(128))
+    
 
 class EventStats(UserMixin, db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)
