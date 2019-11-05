@@ -117,6 +117,7 @@ class Event(Searchable, UserMixin, db.Model):
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
     location = db.Column(db.String(128))   
+    content = db.Column(db.Text())
 
 class EventStats(UserMixin, db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)
