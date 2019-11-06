@@ -1,0 +1,15 @@
+<div class="card-event">
+    <div class="card-content">
+        <h1>{{ event.event_name }}</h1>
+        <h4>Hosted by {% if author %}{{ author.username }}{% else %}$hostname{% endif %}</h4>
+        <p> {{ event.description }}
+        </p>
+        <p>Date: {{ moment(event.start_time).format('LLL') }}</p>
+        <p>Location: {{ event.location }}</p>
+        <a href="{{url_for('home.follow', event_id=event.id)}}">Follow</a>
+        <a href="{{url_for('home.unfollow', event_id=event.id)}}">Unfollow</a>
+	<br>
+
+	<a href="{{url_for('home.event_info', event_id=event.id)}}">More Info</a>
+    </div>
+</div>

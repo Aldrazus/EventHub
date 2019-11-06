@@ -1,0 +1,18 @@
+{% extends "user.html" %}
+
+{% block user_content %}
+    <div class="col-md-12">
+        <div class="row border-bottom mb-3 align-items-center">
+            <h3 class="col-md-auto" style="color: steelblue">Events Following</h3>
+        </div>
+        <div class="row">
+            {% for e in events %}
+                <div class="col-md-4">
+                    {% set event = e[1] %}
+                    {% set author = e[0] %}
+                    {% include "card-event.html" %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
