@@ -50,8 +50,20 @@ def user_posts(username):
 @mod.route('/user/<string:username>/followed')
 @login_required
 def followed(username):
+    user = {
+        'username': username,
+        'role': 'Event Organizer',
+        'about': 'This is an example About Me section.',
+        'img_file': url_for('static', filename='profile_pics/default.jpg'),
+        'interests': [
+            'Computer Science',
+            'Sports',
+            'Basketball',
+            'Movies'
+        ]
+    }
     followed_events = current_user.followed.all()
-    return render_template("followed_events.html", events=followed_events)
+    return render_template("followed_events.html", user=user, events=followed_events)
 
 
 # WIP
@@ -60,6 +72,7 @@ def followed(username):
 def about(username):
     user = {
         'username': username,
+        'role': 'Event Organizer',
         'about': 'This is an example About Me section.',
         'img_file': url_for('static', filename='profile_pics/default.jpg'),
         'interests': [

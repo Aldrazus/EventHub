@@ -65,6 +65,7 @@ def user(username):
     # Get info from db based on username, send to template
     user_info = {
         'username': username,
+        'role': 'Event Organizer',
         'about': 'This is an example About Me section.',
         'img_file': url_for('static', filename='profile_pics/default.jpg'),
         'interests': [

@@ -6,16 +6,16 @@
 
 {% block content %}
 <div class="content-section">
-    <div class="banner bg-dark">
-        <div class="row border-bottom" style="margin-top: -15px; background-color: rgb(237,241,245)">
+    <div class="banner">
+        <div class="row coverbg bg-lav" style="margin-top: -15px;">
             <div class="col-md-3 align-self-baseline">
                 <img class="img-fluid img-thumbnail" src= "{{ user.img_file }}" />
             </div>
             <div class="col-md-auto align-self-baseline" style="padding-bottom: 0.5rem;">
-                <h1><a class="text-dark" href="">{{ user.username }}</a></h1>
+                <h1><a class="text-dark" style="color: royalblue;" href="">{{ user.username }}</a></h1>
             </div>
-            <div class="col-md-3 ml-auto text-center align-self-end">
-                <h4 class="card bg-light">{{current_user.role}}</h4>
+            <div class="col-md-3 ml-auto card align-self-end bg-lavlight">
+                <h4 class="text-center">{{user.role}}</h4>
             </div>
         </div>
 
@@ -37,20 +37,37 @@
 
         <div class="col-md-5 ml-3">
             <div class="row mb-3">
-                <div class="col-md-12 card bg-light">
-                    <h4 class="text-center border-bottom">About Me</h4>
-                    <p>{{user.about}}</p>
+                <div class="col-md-12 card bg-lav">
+                    <div class="row mb-3 border-bottom border-light">
+                        <div class="col-md-12">
+                            <h4 class="text-center">About Me</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>{{user.about}}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12 card bg-light">
-                    <h4 class="text-center border-bottom">Interests</h4>
-                    {% for item in user.interests %}
-                    <p>{{item}}</p>
-                    {% endfor %}
+                <div class="col-md-12 card bg-lav">
+                    <div class="row mb-3 border-bottom border-light">
+                        <div class="col-md-12">
+                            <h4 class="text-center">Interests</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {% for item in user.interests %}
+                        <div class="col-md-6 mb-3">
+                            <h5><span class="badge badge-info bg-tag">{{item}}</span></h5>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
+        <!-- 
         <div class="col-md-6 ml-5 card bg-light">
             <h4 class="text-center border-bottom mb-3">Recent Activity:</h4>
 
@@ -62,6 +79,25 @@
                 </div>
             {% endfor %}
 
+        </div>
+        -->
+
+        <div class="col-md-6 ml-5 card bg-lav border">
+            <div class="row mb-3 border-bottom border-light">
+                <div class="col-md-12">
+                    <h4 class="text-center">Recent Activity</h4>
+                </div>
+            </div>
+            <div class="row mb-3">
+                {% for item in activity %}
+                <!-- Activity Card -->
+                <div class="col-md-10 offset-md-1 card border border-dark mb-3 h-75">
+                    <div class="container">
+                    <p class="text-center">{{item}}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
 
         {% endblock %}

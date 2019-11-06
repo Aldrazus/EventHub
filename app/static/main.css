@@ -30,7 +30,37 @@ body {
   .site-header .navbar-nav .nav-link.active {
     font-weight: 500;
   }
+
+  .text-gray {
+    color: silver;
+  }
   
+  .bg-light{
+    background-color: rgb(237,241,245);
+  }
+
+  .bg-lav{
+    background-color: lavender;
+  }
+
+  .bg-lavlight{
+    background: lavenderblush;
+    background-color: lavenderblush;
+  }
+
+  .bg-cyan{
+    background-color: cyan;
+  }
+
+  .bg-royalblue{
+    background: royalblue;
+    background-color: royalblue;
+  }
+
+  .bg-tag{
+    background: #939afc;
+  }
+
   .banner {
     background: #939afc;
     padding: 20px 20px;
@@ -95,7 +125,6 @@ body {
     font-size: 2.5rem;
   }
 
-<<<<<<< HEAD
   .account-section {
     background: gray;
     padding: 10px 20px;
@@ -103,7 +132,6 @@ body {
     border-radius: 3px;
     margin-bottom: 20px;
   }
-=======
 /*
   EVENT CARDS
 */
@@ -129,4 +157,3 @@ body {
 .card-event:hover {
   transform: scale(1.01)
 }
->>>>>>> d97ccb1d596e987275cebb865bbcb4e5d5ff32b2
