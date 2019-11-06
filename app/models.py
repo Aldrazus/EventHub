@@ -96,6 +96,7 @@ class User(UserMixin, db.Model):
         return followed_events.filter(User.id == self.id)
 
     #returns tuple of (User, Event) fields. Index 0 for user fields, 1 for event fields
+    #TODO: dont return a tuple, just get events and use Event.get_creator() function
     def get_all_events(self):
         all_events = db.session.query(User, Event).join(Event)
         return all_events.filter_by(id=self.id)
@@ -121,7 +122,7 @@ class Event(Searchable, UserMixin, db.Model):
 
     def get_creator(self):
         return User.query.filter_by(id=self.owner_id).first()
-        
+
 
 class EventStats(UserMixin, db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)

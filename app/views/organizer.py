@@ -45,7 +45,7 @@ def post():
 @login_required
 def user_posts(username):
     user = User.query.filter_by(username=username).first()
-    posts = current_user.get_all_events()
+    posts = user.get_all_events()
     return render_template("posts.html", user=user, events=posts)
 
 @mod.route('/user/<string:username>/followed')
