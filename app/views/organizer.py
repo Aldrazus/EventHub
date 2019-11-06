@@ -64,6 +64,8 @@ def followed(username):
     }
     followed_events = current_user.followed.all()
     return render_template("followed_events.html", user=user, events=followed_events)
+    # followed_events = current_user.get_followed_events()
+    # return render_template("followed_events.html", events=followed_events) #rename this to something better like event_info
 
 
 # WIP

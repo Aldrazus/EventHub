@@ -91,6 +91,10 @@ class User(UserMixin, db.Model):
         if self.is_following(event):
             self.followed.remove(event)
 
+    def get_followed_events(self):
+        followed_events = db.session.query(User, Event).join(User.followed)
+        return followed_events.filter(User.id == self.id)
+
     #returns tuple of (User, Event) fields. Index 0 for user fields, 1 for event fields
     def get_all_events(self):
         all_events = db.session.query(User, Event).join(Event)
@@ -113,6 +117,7 @@ class Event(Searchable, UserMixin, db.Model):
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
     location = db.Column(db.String(128))   
+    content = db.Column(db.Text())
 
 class EventStats(UserMixin, db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)

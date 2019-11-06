@@ -31,6 +31,15 @@ def search():
     return render_template('results.html', title='Search Results', events=events,
                             next_url=next_url, prev_url=prev_url)
     
+@mod.route('/event/<event_id>')
+@login_required
+def event_info(event_id):
+    event = Event.query.filter_by(id=event_id).first()
+    if event is None:
+        flash('Event {} - {} not found.'.format(event_id, event.event_name))
+        return redirect(url_for('auth.index'))
+    return render_template('event-info.html', title='Event Info', event=event)
+
 
 @mod.route('/follow/<event_id>')
 @login_required
