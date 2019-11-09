@@ -11,18 +11,18 @@ mod = Blueprint('organizer', __name__,
                         template_folder='app/templates')
 
 
-#some code from Miguel Grinberg's blog
-#https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins
 @mod.route('/')
 @login_required
 def index():
     return render_template("home.html", title="Home")
 
+#   Post Route
 @mod.route('/post', methods=['GET', 'POST'])
 @login_required
 def post():
     form = PostForm()
     if form.validate_on_submit():
+        #create new event and store in database
         event = Event(event_name=form.event_name.data, 
             owner_id=current_user.id, 
             description=form.event_desc.data, 
@@ -33,30 +33,34 @@ def post():
         db.session.add(event)
         db.session.commit()
 
-        if False: #do some checks on the form
+        if False: #TODO: do some checks on the form
             flash('Invalid data')
             return redirect(url_for('organizer.post'))
-        flash('hey this works')
+        flash('hey this works') #TODO: change this and redirect to more appropriate page
         return redirect(url_for('organizer.post'))
     return render_template("post.html", title='Post Event', form=form)
 
-# driver 
+#   User Posts Route (rename to events?)
 @mod.route('/user/<string:username>/posts')
 @login_required
 def user_posts(username):
+    #get user and events made by user
     user = User.query.filter_by(username=username).first()
-    posts = user.get_all_events()
+    posts = user.get_all_events() #rename to events?
     return render_template("posts.html", user=user, events=posts)
 
+#   Followed Events Route
 @mod.route('/user/<string:username>/followed')
 @login_required
 def followed(username):
+    #TODO: check if user is not current_user, else dont make query
     user = User.query.filter_by(username=username).first()
-    followed_events = current_user.get_followed_events()
+    followed_events = user.get_followed_events()
     return render_template("followed_events.html", user=user, events=followed_events) #rename this to something better like event_info
 
 
 # WIP
+#   About Route
 @mod.route('/user/<string:username>/about')
 @login_required
 def about(username):

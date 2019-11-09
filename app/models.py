@@ -9,6 +9,7 @@ followers = db.Table('followers',
     db.Column('event_id', db.Integer, db.ForeignKey('event.id'))
 )
 
+#TODO: cite this
 class Searchable():
 
     #TODO: move to Event and User classes
@@ -55,9 +56,11 @@ class Searchable():
 db.event.listen(db.session, 'before_commit', Searchable.before_commit)
 db.event.listen(db.session, 'after_commit', Searchable.after_commit)
 
-#some code from Miguel Grinberg's blog
-#https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins
-#user model used for testing login
+#   User Class - model representing app users, can either be 'Student' or 'Event Organizer'
+#   Inherits from UserMixin to implement necessary functions for flask-login
+#   For more info on UserMixin: https://flask-login.readthedocs.io/en/latest/#your-user-class
+#   Inherits from Model class, which is a base for models being stored in database
+#   For more info on Models: https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/#a-minimal-application
 class User(UserMixin, db.Model):
     #columns in user table
     id = db.Column(db.Integer, primary_key=True)
@@ -68,14 +71,22 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(64))
     role = db.Column(db.String(64))
 
-    #many to many followed relationship
+    
+    #   Followed Relationship - many to many relationship between followers (users) and
+    #       events
+    #   For more info on relationships: https://docs.sqlalchemy.org/en/13/orm/basic_relationships.html
     followed = db.relationship(
         'Event', secondary=followers,
         backref=db.backref('followers',lazy='dynamic'), lazy='dynamic'
     )
 
-    #one to many event posts
+    #   Owned Events Relationship - one to many relationship between event owner/creator (user)
+    #       and events
+    #   For more info on relationships: https://docs.sqlalchemy.org/en/13/orm/basic_relationships.html
     events = db.relationship('Event', backref='owner', lazy='dynamic')
+
+
+    #   Some useful queries
 
     #check if user is following event
     def is_following(self, event):
@@ -91,6 +102,7 @@ class User(UserMixin, db.Model):
         if self.is_following(event):
             self.followed.remove(event)
 
+    #get all events a user is following joined with the creators of those events
     def get_followed_events(self):
         followed_events = db.session.query(User, Event).join(User.followed)
         return followed_events.filter(User.id == self.id)
@@ -101,6 +113,9 @@ class User(UserMixin, db.Model):
         all_events = db.session.query(User, Event).join(Event)
         return all_events.filter_by(id=self.id)
     
+    
+    #   Some useful functions for registering and authenticating users securely
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -108,8 +123,17 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
+#   Event Class - model representing events posted by organizers
+#   Inherits from UserMixin to implement necessary functions for flask-login
+#   For more info on UserMixin: https://flask-login.readthedocs.io/en/latest/#your-user-class
+#   Inherits from Model class, which is a base for models being stored in database
+#   For more info on Models: https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/#a-minimal-application
+#   Inherits from Searchable class, which provides indexing functionalities
 class Event(Searchable, UserMixin, db.Model):
+    #   Fields that are able to be searched in search engine
     __searchable__ = ['event_name', 'description'] 
+
+    #columns in user table
     #TODO: include times, location, and keywords as searchables
     id = db.Column(db.Integer, primary_key=True)
     event_name = db.Column(db.String(120), index=True)
@@ -120,6 +144,8 @@ class Event(Searchable, UserMixin, db.Model):
     location = db.Column(db.String(128))   
     content = db.Column(db.Text())
 
+    #   Some useful queries
+
     def get_creator(self):
         return User.query.filter_by(id=self.owner_id).first()
 
@@ -128,7 +154,8 @@ class EventStats(UserMixin, db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)
 
 
-
+#   Callback function used to reload the user object from the user ID stored in the session.
+#   For more info & source of this function: https://flask-login.readthedocs.io/en/latest/#your-user-class
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))

@@ -18,34 +18,45 @@ mod = Blueprint('auth', __name__,
 def index():
     return render_template("home.html", title="Home")
 
+#   Login Route
 @mod.route('/login', methods=['GET', 'POST'])
 def login():
+    #redirect to home page if user already logged in
     if current_user.is_authenticated:
         return redirect('/')
+    
     form = LoginForm()
     if form.validate_on_submit():
+        #check if user exists and passwords match
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('auth.login'))
         login_user(user)
+
+        #next_page functionality sourced from:
+        #https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('auth.index')
         return redirect(next_page)
     return render_template("login.html", title='Sign In', form=form)
 
+#   Logout Route
 @mod.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('auth.login'))
 
+#   Register Route
 @mod.route('/register', methods=['GET', 'POST'])
 def register():
+    #redirect user if already logged in
     if current_user.is_authenticated:
         return redirect('/')
     form = RegisterForm()
     if form.validate_on_submit():
+        #create and add user to database
         user = User(username=form.username.data, role=form.role.data)
         user.set_password(form.password.data)
         db.session.add(user)
