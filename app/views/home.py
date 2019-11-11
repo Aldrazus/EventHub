@@ -4,6 +4,7 @@ from app.models import User, Event
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db
 from forms import SearchForm
+from calendar_insert import insert 
 import config
 
 
@@ -48,6 +49,28 @@ def event_info(event_id):
         flash('Event {} - {} not found.'.format(event_id, event.event_name))
         return redirect(url_for('auth.index'))
     return render_template('event-info.html', title='Event Info', event=event)
+
+#   Event Calendar Insert Route
+@mod.route('/calendar_insert/<event_id>')
+@login_required
+def calendar_insert(event_id):
+    #get event info
+    event = Event.query.filter_by(id=event_id).first()
+    #check if event exists
+    if event is None:
+        flash('Event {} - {} not found.'.format(event_id, event.event_name))
+        return redirect(url_for('auth.index'))
+
+    insert(event.event_name, event.location, event.description, event.start_time, event.end_time)
+    flash('Added to Google Calendar: {}'.format(event.event_name))
+
+    #next_page functionality sourced from:
+    #https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins
+    next_page = request.args.get('next')
+    if not next_page or url_parse(next_page).netloc != '':
+        next_page = url_for('auth.index')
+    return redirect(next_page)
+
 
 #   Follow Event Route
 @mod.route('/follow/<event_id>')
