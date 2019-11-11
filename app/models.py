@@ -2,11 +2,21 @@ from flask_login import UserMixin
 from app import login_manager, db
 from app.search import add_to_index, remove_from_index, query_index
 from werkzeug.security import generate_password_hash, check_password_hash
+from time import time
 
 #many to many association table for user following events
 followers = db.Table('followers',
     db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
     db.Column('event_id', db.Integer, db.ForeignKey('event.id'))
+)
+
+#many to many association table for users friending other users
+#use this maybe:
+#https://stackoverflow.com/questions/9116924/how-can-i-achieve-a-self-referencing-many-to-many-relationship-on-the-sqlalchemy
+friends = db.Table('friends',
+    db.Column('friender_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('friendee_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('status', db.Integer)
 )
 
 #TODO: cite this
@@ -70,11 +80,15 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(64))
     last_name = db.Column(db.String(64))
     role = db.Column(db.String(64))
+    interests = db.Column(db.Text)
 
     
+    #   Relationships
+    #   For more info on relationships: https://docs.sqlalchemy.org/en/13/orm/basic_relationships.html
+
     #   Followed Relationship - many to many relationship between followers (users) and
     #       events
-    #   For more info on relationships: https://docs.sqlalchemy.org/en/13/orm/basic_relationships.html
+    #   
     followed = db.relationship(
         'Event', secondary=followers,
         backref=db.backref('followers',lazy='dynamic'), lazy='dynamic'
@@ -82,11 +96,24 @@ class User(UserMixin, db.Model):
 
     #   Owned Events Relationship - one to many relationship between event owner/creator (user)
     #       and events
-    #   For more info on relationships: https://docs.sqlalchemy.org/en/13/orm/basic_relationships.html
     events = db.relationship('Event', backref='owner', lazy='dynamic')
 
+    #   Notifications Relationship - one to many relationship between user and notification
+    notifications = db.relationship('Notification', backref='user', lazy='dynamic')
 
-    #   Some useful queries
+    #   Friended Relationship - many to many relationship between users
+    friended = db.relationship(
+        'User', secondary=friends,
+        #used to remove foreign key ambiguity error
+        primaryjoin=(friends.c.friender_id == id),
+        secondaryjoin=(friends.c.friendee_id == id),
+        backref=db.backref('friends', lazy='dynamic'), lazy='dynamic'
+    )
+
+
+
+
+    #   Some useful functions related to follows
 
     #check if user is following event
     def is_following(self, event):
@@ -101,6 +128,21 @@ class User(UserMixin, db.Model):
     def unfollow(self, event):
         if self.is_following(event):
             self.followed.remove(event)
+
+    #   Some useful functions related to friends
+
+    #send a friend request notification
+    #def send_friend_request(self, user):
+
+    #def accept_friend_request(self, user):
+
+    #   Some useful functions related to notifications
+
+    #can be post update, friend request, post creation by friend,  etc
+    #def send_notification(self, user_id=None, event_id=None):
+
+
+    #   Some useful queries
 
     #get all events a user is following joined with the creators of those events
     def get_followed_events(self):
@@ -152,6 +194,16 @@ class Event(Searchable, UserMixin, db.Model):
 
 class EventStats(UserMixin, db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)
+
+
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    #type field maybe? can be create, update, etc.
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    timestamp = db.Column(db.Float, index=True, default=time)
+    description = db.Column(db.Text)
+    #link = db.Column(db.String(120)) #link to event page or friend request or something
+    
 
 
 #   Callback function used to reload the user object from the user ID stored in the session.
