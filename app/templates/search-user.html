@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class = "content-section">
+    <form action="" method="GET">
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4"><h1>Search for Users</h1></legend>
+            <div class="form-group">
+                {{ form.q.label(class="form-control-label") }}
+                {{ form.q(class="form-control form-control-lg") }}
+                {% for err in form.q.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock %}

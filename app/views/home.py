@@ -3,7 +3,7 @@ from werkzeug.urls import url_parse
 from app.models import User, Event, Notification
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db
-from forms import SearchForm
+from forms import SearchForm, SearchUserForm
 from calendar_insert import insert 
 import config
 
@@ -37,6 +37,25 @@ def search():
     return render_template('results.html', title='Search Results', events=events,
                             next_url=next_url, prev_url=prev_url)
     
+@mod.route('/search_user')
+@login_required
+def search_user():
+    form = SearchUserForm()
+    if not form.validate():
+        return render_template('search-user.html', title='Search', form=form)
+    page = request.args.get('page', 1, type=int)
+    users, total = User.search(form.q.data, page, current_app.config['EVENTS_PER_PAGE'])
+
+    #TODO: remove, not used
+    #get url for next page of search results
+    next_url = url_for('home.search', q=form.q.data, page=page + 1) \
+        if total > page * current_app.config['EVENTS_PER_PAGE'] else None
+    #get url for prev page of search results
+    prev_url = url_for('home.search', q=form.q.data, page=page - 1) \
+        if page > 1 else None
+
+    return render_template('results-user.html', title='Search Results', users=users,
+                            next_url=next_url, prev_url=prev_url)
 
 #   Event Info Route
 @mod.route('/event/<event_id>')
