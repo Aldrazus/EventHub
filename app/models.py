@@ -71,7 +71,8 @@ db.event.listen(db.session, 'after_commit', Searchable.after_commit)
 #   For more info on UserMixin: https://flask-login.readthedocs.io/en/latest/#your-user-class
 #   Inherits from Model class, which is a base for models being stored in database
 #   For more info on Models: https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/#a-minimal-application
-class User(UserMixin, db.Model):
+class User(Searchable, UserMixin, db.Model):
+    __searchable__ = ['username', 'first_name', 'last_name']
     #columns in user table
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -150,10 +151,10 @@ class User(UserMixin, db.Model):
         return followed_events.filter(User.id == self.id)
 
     #returns tuple of (User, Event) fields. Index 0 for user fields, 1 for event fields
-    #TODO: dont return a tuple, just get events and use Event.get_creator() function
+    #TODO: dont return a tuple, just get events and use Event.get_creator() function - done
     def get_all_events(self):
-        all_events = db.session.query(User, Event).join(Event)
-        return all_events.filter_by(id=self.id)
+        all_events = Event.query.filter_by(owner_id=self.id).all()
+        return all_events
     
     
     #   Some useful functions for registering and authenticating users securely
