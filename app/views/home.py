@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, session, url_for, redirect, flash, current_app
 from werkzeug.urls import url_parse
-from app.models import User, Event
+from app.models import User, Event, Notification
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db
 from forms import SearchForm
@@ -95,7 +95,7 @@ def follow(event_id):
     return redirect(next_page)
 
 
-#   Unfollow route
+#   Unfollow Route
 @mod.route('/unfollow/<event_id>')
 @login_required
 def unfollow(event_id):
@@ -115,3 +115,12 @@ def unfollow(event_id):
     if not next_page or url_parse(next_page).netloc != '':
         next_page = url_for('auth.index')
     return redirect(next_page)
+
+
+#   Notifications Route
+@mod.route('/notifications')
+@login_required
+def notifications():
+    #get all notifications
+    notifs = current_user.notifications.order_by(Notification.timestamp.asc())
+    return render_template('notifs.html', title='Notifications', notifs=notifs)

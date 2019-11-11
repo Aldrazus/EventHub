@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Your Notifications</h1>
+{% for notif in notifs %}
+<h4>{{ notif.timestamp }}</h4>
+<p>{{ notif.description }}</p>
+{% endfor %}
+
+{% endblock %}
