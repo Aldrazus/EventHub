@@ -47,6 +47,7 @@ class PostForm(FlaskForm):
 
 class SearchForm(FlaskForm):
     q = StringField('Search', validators=[DataRequired()])
+    #add more fields like time and location
     submit = SubmitField('Search')
 
     def __init__(self, *args, **kwargs):
@@ -60,6 +61,7 @@ class SearchUserForm(FlaskForm):
     q = StringField('Search User', validators=[DataRequired()])
     submit = SubmitField('Search')
 
+    #TODO: remove this maybe
     def __init__(self, *args, **kwargs):
         if 'formdata' not in kwargs:
             kwargs['formdata'] = request.args
