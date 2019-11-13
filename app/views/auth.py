@@ -1,10 +1,12 @@
-from flask import Blueprint, render_template, request, session, url_for, redirect, flash
+from flask import Blueprint, render_template, request, session, url_for, redirect, flash, current_app
 from werkzeug.urls import url_parse
-from app.models import User
+from app.models import User, Activity
 from flask_login import current_user, login_user, logout_user, login_required
-from forms import LoginForm, RegisterForm
+from forms import LoginForm, RegisterForm, AccountSettingsForm
 from app import db
+from PIL import Image
 import config
+import os
 
 
 mod = Blueprint('auth', __name__,
@@ -46,36 +48,83 @@ def register():
         return redirect('/')
     form = RegisterForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, role=form.role.data)
+        user = User(
+            username=form.username.data, 
+            role=form.role.data,
+            email=form.email.data,
+            )
         user.set_password(form.password.data)
         db.session.add(user)
+
+        activity = Activity(
+            subject_id = user.id,
+            type = "user",
+            verb = "registered",
+        )
+
+        db.session.add(activity)
+
         db.session.commit()
+
         flash('successful registration')
         return redirect(url_for('auth.login'))
     return render_template('register.html', title="Register", form=form)
 
+def save_picture(form_picture):
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = str(current_user.id) + f_ext
+    picture_path = os.path.join(current_app.root_path, 'static/profile_pics', picture_fn)
+    output_size = (250, 250)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
 @mod.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
-    return render_template('settings.html')
+    form = AccountSettingsForm()
+    if form.validate_on_submit():
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.img_file = picture_file
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        current_user.about = form.about.data
+        current_user.interests = form.interests.data
+        db.session.commit()
+        flash('Your account has been updated!', 'success')
+        return redirect(url_for('auth.settings'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+        form.about.data = current_user.about
+        form.interests.data = current_user.interests
+    return render_template('settings.html', title='Settings', form=form)
 
-@mod.route('/user/<string:username>', methods=['GET'])
+# Should move this to a user blueprint
+@mod.route('/profile/<string:username>', methods=['GET'])
 @login_required
-def user(username):
+def profile(username):
     # Get info from db based on username, send to template
-    user_info = {
-        'username': username,
-        'role': 'Event Organizer',
-        'about': 'This is an example About Me section.',
-        'img_file': url_for('static', filename='profile_pics/default.jpg'),
-        'interests': [
-            'Computer Science',
-            'Sports',
-            'Basketball',
-            'Movies'
-        ]
-    }
-    # 10 most recent events, with option to show more potentially added later on
+    if username == current_user.username:
+        user = current_user
+    else:
+        user = User.query.filter_by(username=username).first()
+        if user is None:
+            flash('Invalid username or password')
+            return redirect(url_for('auth.login'))
+
+    # Some recent events, with option to show more potentially added later on
     # Should send associated event object to link that in the activity
-    activity = ["Registered for event A", "Created event B"]
-    return render_template('user.html', title=username, user=user_info, activity=activity)
+    
+    # activity = ["Registered for event A", "Created event B"]
+
+    activity = Activity.query.filter_by(
+        subject_id=user.id
+        ).order_by(
+            Activity.time.desc()
+            ).limit(10)
+
+    return render_template('profile.html', title=username, user=user, activity=activity)

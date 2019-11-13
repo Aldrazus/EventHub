@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, session, url_for, redirect, flash, current_app
 from werkzeug.urls import url_parse
-from app.models import User, Event
+from app.models import User, Event, Activity
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db
 from forms import SearchForm
@@ -49,6 +49,17 @@ def follow(event_id):
         flash('Event {} - {} not found.'.format(event_id, event.event_name))
         return redirect(url_for('auth.index'))
     current_user.follow(event)
+
+    activity = Activity(
+            subject_id = current_user.id,
+            receiver_id = event.id,
+            type = "event",
+            verb = "followed",
+            info = ""
+        )
+
+    db.session.add(activity)
+
     db.session.commit()
     flash('You are following this event: {}'.format(event.event_name))
     next_page = request.args.get('next')

@@ -9,7 +9,7 @@
     <div class="banner">
         <div class="row coverbg bg-lav" style="margin-top: -15px;">
             <div class="col-md-3 align-self-baseline">
-                <img class="img-fluid img-thumbnail" src= "{{ user.img_file }}" />
+                <img class="img-fluid img-thumbnail" src="{{ url_for('static', filename = "profile_pics/" + user.img_file) }}" />
             </div>
             <div class="col-md-auto align-self-baseline" style="padding-bottom: 0.5rem;">
                 <h1><a class="text-dark" style="color: royalblue;" href="">{{ user.username }}</a></h1>
@@ -21,8 +21,8 @@
 
         <!-- Nav Tabs -->
         <div class="row nav nav-tab nav-justified justify-content-center align-items-end">
-            <a class="nav-item nav-link text-light" href="{{ url_for('auth.user', username=user.username) }}">Overview</a>
-            {% if current_user.role == "Event Organizer" %}
+            <a class="nav-item nav-link text-light" href="{{ url_for('auth.profile', username=user.username) }}">Overview</a>
+            {% if user.role == "Event Organizer" %}
                 <a class="nav-item nav-link text-light" href="{{ url_for('organizer.user_posts', username=user.username) }}">Events</a>
             {% endif %}
             <a class="nav-item nav-link text-light" href="{{ url_for('organizer.followed', username=user.username) }}">Followed Events</a>
@@ -58,9 +58,9 @@
                         </div>
                     </div>
                     <div class="row">
-                        {% for item in user.interests %}
+                        {% for item in user.interests.split(",") %}
                         <div class="col-md-6 mb-3">
-                            <h5><span class="badge badge-info bg-tag">{{item}}</span></h5>
+                            <h5><span class="badge badge-info bg-tag">{{item.strip()}}</span></h5>
                         </div>
                         {% endfor %}
                     </div>
@@ -93,7 +93,13 @@
                 <!-- Activity Card -->
                 <div class="col-md-10 offset-md-1 card border border-dark mb-3 h-75">
                     <div class="container">
-                    <p class="text-center">{{item}}</p>
+                        <p class = "text-right">{{item.time}}</p>
+                    <p class="text-center">
+                        {{ user.username + " " + item.verb }} 
+                        <a href="/{{item.type}}/{{item.receiver_id}}">
+                            {{ item.type }}
+                        </a>
+                    </p>
                     </div>
                 </div>
                 {% endfor %}

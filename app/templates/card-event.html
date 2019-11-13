@@ -6,10 +6,10 @@
         </p>
         <p>Date: {{ moment(event.start_time).format('LLL') }}</p>
         <p>Location: {{ event.location }}</p>
-        <a href="{{url_for('home.follow', event_id=event.id)}}">Follow</a>
-        <a href="{{url_for('home.unfollow', event_id=event.id)}}">Unfollow</a>
+        <a href={{url_for('home.follow', event_id=event.id)}}>Follow</a>
+        <a href={{url_for('home.unfollow', event_id=event.id)}}>Unfollow</a>
 	<br>
 
-	<a href="{{url_for('home.event_info', event_id=event.id)}}">More Info</a>
+	<a href={{url_for('home.event_info', event_id=event.id)}}>More Info</a>
     </div>
 </div>

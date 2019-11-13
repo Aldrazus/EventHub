@@ -2,6 +2,7 @@ from flask_login import UserMixin
 from app import login_manager, db
 from app.search import add_to_index, remove_from_index, query_index
 from werkzeug.security import generate_password_hash, check_password_hash
+import datetime
 
 #many to many association table for user following events
 followers = db.Table('followers',
@@ -67,6 +68,10 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(64))
     last_name = db.Column(db.String(64))
     role = db.Column(db.String(64))
+    about = db.Column(db.String(256))
+    interests = db.Column(db.String(256))
+    img_file = db.Column(db.String(128), unique=True, default='profile_pics/default.jpg')
+
 
     #many to many followed relationship
     followed = db.relationship(
@@ -117,12 +122,26 @@ class Event(Searchable, UserMixin, db.Model):
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
     location = db.Column(db.String(128))   
-    content = db.Column(db.Text())
+    # content = db.Column(db.Text())
 
 class EventStats(UserMixin, db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)
 
-
+class Activity(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    # What does the action (user, event)
+    subject_id = db.Column(db.Integer)
+    # Who receives the action (if any) (e.g. user follows ->event, event updates ->itself)
+    receiver_id = db.Column(db.Integer)
+    # What is the receiver (event, user)
+    type = db.Column(db.String(32))
+    # What is the action (create, follow, update)
+    verb = db.Column(db.String(32))
+    # Extra info if useful and can avoid a join
+    info = db.Column(db.String(255))
+    # When did it happen
+    time = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    
 
 @login_manager.user_loader
 def load_user(id):

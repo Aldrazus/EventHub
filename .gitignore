@@ -3,3 +3,5 @@ __pycache__/
 venv/
 migrations/
 app.db
+static/profile_pics/*.*
+!static/profile_pics/default.jpg

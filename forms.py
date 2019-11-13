@@ -1,9 +1,10 @@
 from flask import request
 from flask_wtf import FlaskForm
-#from flask_wtf.file import FileField, FileAllowed, FileRequired
+from flask_login import current_user
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import StringField, PasswordField, SubmitField, RadioField, TextAreaField
 from wtforms.fields.html5 import DateTimeLocalField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Required, regexp
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Required, regexp, Length
 from app.models import User
 import re
 
@@ -19,6 +20,8 @@ class RegisterForm(FlaskForm):
         ('Event Organizer', 'Event Organizer')],
         default='Student', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email',
+                        validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
@@ -55,3 +58,24 @@ class SearchForm(FlaskForm):
         if 'csrf_enabled' not in kwargs:
             kwargs['csrf_enabled'] = False
         super(SearchForm, self).__init__(*args, **kwargs)
+
+class AccountSettingsForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email',
+                        validators=[DataRequired(), Email()])
+    about = TextAreaField('About', validators=[Length(max=256)])
+    interests = TextAreaField('Interests', validators=[Length(max=256)])
+    picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
+    submit = SubmitField('Update')
+
+    def validate_username(self, username):
+        if username.data != current_user.username:
+            user = User.query.filter_by(username=username.data).first()
+            if user:
+                raise ValidationError('That username is taken. Please choose a different one.')
+
+    def validate_email(self, email):
+        if email.data != current_user.email:
+            user = User.query.filter_by(email=email.data).first()
+            if user:
+                raise ValidationError('That email is taken. Please choose a different one.')
