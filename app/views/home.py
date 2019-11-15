@@ -139,6 +139,11 @@ def unfollow(event_id):
         next_page = url_for('auth.index')
     return redirect(next_page)
 
+@mod.route('/add/<user_id>')
+@login_required
+def add(user_id):
+    return
+
 
 #   Notifications Route
 @mod.route('/notifications')

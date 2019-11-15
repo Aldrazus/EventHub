@@ -6,8 +6,11 @@
         </p>
         <p>Date: {{ moment(event.start_time).format('LLL') }}</p>
         <p>Location: {{ event.location }}</p>
-        <a href="{{url_for('home.follow', event_id=event.id)}}">Follow</a>
+        {% if current_user.is_following(event) %}
         <a href="{{url_for('home.unfollow', event_id=event.id)}}">Unfollow</a>
+        {% else %}
+        <a href="{{url_for('home.follow', event_id=event.id)}}">Follow</a>
+        {% endif %}
 	<br>
 
 	<a href="{{url_for('home.event_info', event_id=event.id)}}">More Info</a>

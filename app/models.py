@@ -63,6 +63,11 @@ class User(UserMixin, db.Model):
         backref=db.backref('friends', lazy='dynamic'), lazy='dynamic'
     )
 
+    #   Some useful functions related to friends
+
+    def is_friends(self, user):
+        return
+
 
 
 
