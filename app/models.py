@@ -1,6 +1,5 @@
 from flask_login import UserMixin
 from app import login_manager, db
-from app.search import add_to_index, remove_from_index, query_index
 from werkzeug.security import generate_password_hash, check_password_hash
 from time import time
 
@@ -19,63 +18,12 @@ friends = db.Table('friends',
     db.Column('status', db.Integer)
 )
 
-#TODO: cite this
-class Searchable():
-
-    #TODO: move to Event and User classes
-    @classmethod
-    def search(cls, expression, page, per_page):
-        ids, total = query_index(cls.__tablename__, expression, page, per_page)
-        if total == 0:
-            return cls.query.filter_by(id=0), 0
-
-        #lists the events in order of relevance, (ID1, 1), (ID2, 2), ...
-        #gets actual events from ids
-        when = [(ids[i], i) for i in range(len(ids))]
-        return cls.query.filter(cls.id.in_(ids)).order_by(
-            db.case(when, value=cls.id)), total
-    
-    #TODO: remove dictionary, strip down, and move to search
-    #TODO: just move to search
-    @classmethod
-    def before_commit(cls, session):
-        session._changes = {
-            'add': list(session.new),
-            'update': list(session.dirty),
-            'delete': list(session.deleted)
-        }
-
-    #TODO: move to search, just check if __tablename__ == event or user OR
-    #class has __searchable__ attr
-    @classmethod
-    def after_commit(cls, session):
-        for obj in session._changes['add']:
-            if isinstance(obj, Searchable):
-                add_to_index(obj.__tablename__, obj)
-        for obj in session._changes['update']:
-            if isinstance(obj, Searchable):
-                add_to_index(obj.__tablename__, obj)
-        for obj in session._changes['delete']:
-            if isinstance(obj, Searchable):
-                remove_from_index(obj.__tablename__, obj)
-        session._changes = None
-
-
-    #dont need this
-    @classmethod
-    def reindex(cls):
-        for obj in cls.query:
-            add_to_index(cls.__tablename__, obj)
-
-db.event.listen(db.session, 'before_commit', Searchable.before_commit)
-db.event.listen(db.session, 'after_commit', Searchable.after_commit)
-
 #   User Class - model representing app users, can either be 'Student' or 'Event Organizer'
 #   Inherits from UserMixin to implement necessary functions for flask-login
 #   For more info on UserMixin: https://flask-login.readthedocs.io/en/latest/#your-user-class
 #   Inherits from Model class, which is a base for models being stored in database
 #   For more info on Models: https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/#a-minimal-application
-class User(Searchable, UserMixin, db.Model):
+class User(UserMixin, db.Model):
     __searchable__ = ['username', 'first_name', 'last_name']
     #columns in user table
     id = db.Column(db.Integer, primary_key=True)
@@ -176,9 +124,9 @@ class User(Searchable, UserMixin, db.Model):
 #   Inherits from Model class, which is a base for models being stored in database
 #   For more info on Models: https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/#a-minimal-application
 #   Inherits from Searchable class, which provides indexing functionalities
-class Event(Searchable, UserMixin, db.Model):
+class Event(UserMixin, db.Model):
     #   Fields that are able to be searched in search engine
-    __searchable__ = ['event_name', 'description'] 
+    __searchable__ = ['event_name', 'description', 'start_time', 'location'] 
 
     #columns in user table
     #TODO: include times, location, and keywords as searchables

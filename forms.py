@@ -1,7 +1,7 @@
 from flask import request
 from flask_wtf import FlaskForm
 #from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, PasswordField, SubmitField, RadioField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, RadioField, TextAreaField, SelectField
 from wtforms.fields.html5 import DateTimeLocalField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Required, regexp
 from app.models import User
@@ -48,6 +48,16 @@ class PostForm(FlaskForm):
 class SearchForm(FlaskForm):
     q = StringField('Search', validators=[DataRequired()])
     #add more fields like time and location
+    time = SelectField('Time', choices=[
+        ('', 'Any'),
+        ('today', 'Today'),
+        ('week', 'This Week'),
+        ('month', 'This Month'),
+    ])
+    location = SelectField('Location', choices=[
+        ('', 'Any'),
+        ('tandon', 'Tandon'),
+    ])
     submit = SubmitField('Search')
 
     def __init__(self, *args, **kwargs):

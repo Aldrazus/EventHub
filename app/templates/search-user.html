@@ -8,9 +8,6 @@
             <div class="form-group">
                 {{ form.q.label(class="form-control-label") }}
                 {{ form.q(class="form-control form-control-lg") }}
-                {% for err in form.q.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                {% endfor %}
             </div>
         </fieldset>
         <div class="form-group">

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, session, url_for, redirect, flash, current_app
 from werkzeug.urls import url_parse
 from app.models import User, Event, Notification
+from app.search import search as sch
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db
 from forms import SearchForm, SearchUserForm
@@ -17,6 +18,7 @@ def index():
     return 'index page'
 
 #   Search Route
+#   TODO: ADD BACK PAGES
 @mod.route('/search')
 @login_required
 def search():
@@ -24,7 +26,9 @@ def search():
     if not form.validate():
         return render_template('search.html', title='Search', form=form)
     page = request.args.get('page', 1, type=int) #get page number being displayed
-    events, total = Event.search(form.q.data, page, current_app.config['EVENTS_PER_PAGE'])
+    time = form.time.data if form.time.data != '' else None
+    loc = form.location.data if form.location.data != '' else None
+    events, total = sch(Event, form.q.data, loc, time)
 
     #TODO: remove, not used
     #get url for next page of search results
@@ -44,7 +48,7 @@ def search_user():
     if not form.validate():
         return render_template('search-user.html', title='Search', form=form)
     page = request.args.get('page', 1, type=int)
-    users, total = User.search(form.q.data, page, current_app.config['EVENTS_PER_PAGE'])
+    users, total = sch(User, form.q.data, page, current_app.config['EVENTS_PER_PAGE'])
 
     #TODO: remove, not used
     #get url for next page of search results

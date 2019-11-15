@@ -36,7 +36,7 @@ def post():
         if False: #TODO: do some checks on the form
             flash('Invalid data')
             return redirect(url_for('organizer.post'))
-        flash('hey this works') #TODO: change this and redirect to more appropriate page
+        flash('hey this works' + str(event.start_time)) #TODO: change this and redirect to more appropriate page
         return redirect(url_for('organizer.post'))
     return render_template("post.html", title='Post Event', form=form)
 
