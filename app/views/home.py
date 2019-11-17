@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, session, url_for, redirect, flash, current_app
 from werkzeug.urls import url_parse
-from app.models import User, Event, Activity
+from app.models import User, Event, UserActivity
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db
 from forms import SearchForm
@@ -50,7 +50,7 @@ def follow(event_id):
         return redirect(url_for('auth.index'))
     current_user.follow(event)
 
-    activity = Activity(
+    activity = UserActivity(
             subject_id = current_user.id,
             receiver_id = event.id,
             type = "event",

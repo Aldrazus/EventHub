@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, session, url_for, redirect, flash
 from werkzeug.urls import url_parse
-from app.models import User, Event, Activity
+from app.models import User, Event, UserActivity, EventActivity
 from flask_login import current_user, login_user, logout_user, login_required
 from forms import PostForm
 from app import db
@@ -34,7 +34,7 @@ def post():
         # 
         db.session.add(event)
 
-        activity = Activity(
+        user_action = UserActivity(
             subject_id = current_user.id,
             receiver_id = event.id,
             type = "event",
@@ -42,7 +42,16 @@ def post():
             info = ""
         )
 
-        db.session.add(activity)
+        event_action = EventActivity(
+            subject_id = event.id,
+            receiver_id = event.id,
+            type = "event",
+            verb = "was created",
+            info = ""
+        )
+
+        db.session.add(user_action)
+        db.session.add(event_action)
 
         db.session.commit()
 

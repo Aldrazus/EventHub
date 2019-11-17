@@ -127,11 +127,10 @@ class Event(Searchable, UserMixin, db.Model):
 class EventStats(UserMixin, db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)
 
-class Activity(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    # What does the action (user, event)
-    subject_id = db.Column(db.Integer)
-    # Who receives the action (if any) (e.g. user follows ->event, event updates ->itself)
+class UserActivity(db.Model):
+    id = db.Column(db.Integer, primary_key=True) # activity id
+    user_id = db.Column(db.Integer)
+    # Who receives the action (if any) (e.g. user follows ->event)
     receiver_id = db.Column(db.Integer)
     # What is the receiver (event, user)
     type = db.Column(db.String(32))
@@ -142,6 +141,19 @@ class Activity(db.Model):
     # When did it happen
     time = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     
+class EventActivity(db.Model):
+    id = db.Column(db.Integer, primary_key=True) # activity id
+    event_id = db.Column(db.Integer)
+    # Who receives the action (if any) (e.g. event posts notification)
+    receiver_id = db.Column(db.Integer)
+    # What is the receiver (event, user)
+    type = db.Column(db.String(32))
+    # What is the action (create, follow, update)
+    verb = db.Column(db.String(32))
+    # Extra info if useful and can avoid a join
+    info = db.Column(db.String(255))
+    # When did it happen
+    time = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
 @login_manager.user_loader
 def load_user(id):

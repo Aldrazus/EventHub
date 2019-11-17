@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, session, url_for, redirect, flash, current_app
 from werkzeug.urls import url_parse
-from app.models import User, Activity
+from app.models import User, UserActivity
 from flask_login import current_user, login_user, logout_user, login_required
 from forms import LoginForm, RegisterForm, AccountSettingsForm
 from app import db
@@ -56,7 +56,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
 
-        activity = Activity(
+        activity = UserActivity(
             subject_id = user.id,
             type = "user",
             verb = "registered",
@@ -121,10 +121,10 @@ def profile(username):
     
     # activity = ["Registered for event A", "Created event B"]
 
-    activity = Activity.query.filter_by(
-        subject_id=user.id
+    activity = UserActivity.query.filter_by(
+        user_id=user.id
         ).order_by(
-            Activity.time.desc()
+            UserActivity.time.desc()
             ).limit(10)
 
     return render_template('profile.html', title=username, user=user, activity=activity)
