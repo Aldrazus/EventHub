@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Search Results</h1>
+<div class="container-users">
+    {% for user in users %}
+        {% include "card-user.html" %}
+    {% endfor %}
+</div>
+{% endblock %}

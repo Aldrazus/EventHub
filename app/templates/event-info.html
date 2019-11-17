@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% set author = event.get_creator() %}
 
 {% block content %}
 <div class = "event-detail">
@@ -6,18 +7,17 @@
 	<h4>Hosted by {% if author %}{{ author.username }}{% else %}$hostname{% endif %}</h4>
 	<h4>Date: {{ moment(event.start_time).format('LLL') }}</h4>
 	<h4>Location: {{ event.location }}</h4>
-	<a href="{{url_for('home.follow', event_id=event.id)}}">Follow</a>
-	<a href="{{url_for('home.unfollow', event_id=event.id)}}">Unfollow</a>
-
+	<h4>Description: </h4> 
 	<pre>
-	This is text content for event detail.
-	To be be replace with content instead of description
-	Please ignore.
-	Thank you
-	</pre>
-	<pre> 
 	{{ event.description }} 
 	</pre>
+	<a href="{{url_for('home.follow', event_id=event.id)}}">Follow</a>
+	<a href="{{url_for('home.unfollow', event_id=event.id)}}">Unfollow</a>
+	<br>
+	<a href="{{url_for('home.calendar_insert', event_id=event.id)}}" >Add to Calendar</a>
+
+	
+
 
 </div>
 {% endblock %}

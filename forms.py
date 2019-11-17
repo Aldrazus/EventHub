@@ -2,7 +2,7 @@ from flask import request
 from flask_wtf import FlaskForm
 from flask_login import current_user
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, PasswordField, SubmitField, RadioField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, RadioField, TextAreaField, SelectField
 from wtforms.fields.html5 import DateTimeLocalField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Required, regexp, Length
 from app.models import User
@@ -50,6 +50,17 @@ class PostForm(FlaskForm):
 
 class SearchForm(FlaskForm):
     q = StringField('Search', validators=[DataRequired()])
+    #add more fields like time and location
+    time = SelectField('Time', choices=[
+        ('', 'Any'),
+        ('today', 'Today'),
+        ('week', 'This Week'),
+        ('month', 'This Month'),
+    ])
+    location = SelectField('Location', choices=[
+        ('', 'Any'),
+        ('tandon', 'Tandon'),
+    ])
     submit = SubmitField('Search')
 
     def __init__(self, *args, **kwargs):
@@ -79,3 +90,14 @@ class AccountSettingsForm(FlaskForm):
             user = User.query.filter_by(email=email.data).first()
             if user:
                 raise ValidationError('That email is taken. Please choose a different one.')
+class SearchUserForm(FlaskForm):
+    q = StringField('Search User', validators=[DataRequired()])
+    submit = SubmitField('Search')
+
+    #TODO: remove this maybe
+    def __init__(self, *args, **kwargs):
+        if 'formdata' not in kwargs:
+            kwargs['formdata'] = request.args
+        if 'csrf_enabled' not in kwargs:
+            kwargs['csrf_enabled'] = False
+        super(SearchUserForm, self).__init__(*args, **kwargs)

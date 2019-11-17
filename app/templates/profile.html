@@ -58,11 +58,17 @@
                         </div>
                     </div>
                     <div class="row">
-                        {% for item in user.interests.split(",") %}
-                        <div class="col-md-6 mb-3">
-                            <h5><span class="badge badge-info bg-tag">{{item.strip()}}</span></h5>
-                        </div>
-                        {% endfor %}
+                        {% if user.interests %}
+                            {% for item in user.interests.split(",") %}
+                            <div class="col-md-6 mb-3">
+                                <h5><span class="badge badge-info bg-tag">{{item.strip()}}</span></h5>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="col-md-6 mb-3">
+                                <h2 class="text-light text-center">Empty :(</h2>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

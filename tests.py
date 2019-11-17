@@ -44,5 +44,31 @@ class DBTestCase(unittest.TestCase):
         self.assertEqual(u.followed.count(), 0)
         self.assertEqual(e.followers.count(), 0)
 
+    def test_friends(self):
+        u1 = User(username='A')
+        u2 = User(username='B')
+        db.session.add(u1)
+        db.session.add(u2)
+        db.session.commit()
+        
+        #u1 adds u2 (sends request)
+        u1.friend(u2)
+        db.session.commit()
+        self.assertTrue(u1.has_friended(u2))
+        self.assertFalse(u2.has_friended(u1))
+        self.assertFalse(u1.is_friends_with(u2))
+        self.assertEqual(u1.friended.count(), 1)
+        self.assertEqual(u2.friended.count(), 0)
+
+        #u2 adds u2 (accepts request)
+        u2.friend(u1)
+        db.session.commit()
+        self.assertTrue(u1.has_friended(u2))
+        self.assertTrue(u2.has_friended(u1))
+        self.assertTrue(u1.is_friends_with(u2))
+        self.assertEqual(u1.friended.count(), 1)
+        self.assertEqual(u2.friended.count(), 1)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
