@@ -139,11 +139,39 @@ def unfollow(event_id):
         next_page = url_for('auth.index')
     return redirect(next_page)
 
-@mod.route('/add/<user_id>')
+@mod.route('/friend/<user_id>')
 @login_required
-def add(user_id):
-    return
+def friend(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        flash('User {} not found.'.format(user_id))
+        return redirect(url_for('auth.index'))
+    current_user.friend(user)
+    db.session.commit()
+    flash('You have friended {}'.format(user.username))
+    #next_page functionality sourced from:
+    #https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins
+    next_page = request.args.get('next')
+    if not next_page or url_parse(next_page).netloc != '':
+        next_page = url_for('auth.index')
+    return redirect(next_page)
 
+@mod.route('/unfriend/<user_id>')
+@login_required
+def unfriend(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        flash('User {} not found.'.format(user_id))
+        return redirect(url_for('auth.index'))
+    current_user.unfriend(user)
+    db.session.commit()
+    flash('You have unfriended {}'.format(user.username))
+    #next_page functionality sourced from:
+    #https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins
+    next_page = request.args.get('next')
+    if not next_page or url_parse(next_page).netloc != '':
+        next_page = url_for('auth.index')
+    return redirect(next_page)
 
 #   Notifications Route
 @mod.route('/notifications')

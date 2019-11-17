@@ -2,10 +2,9 @@
 
 {% block content %}
 <h1>Search Results</h1>
-<div class="container-events">
+<div class="container-users">
     {% for user in users %}
-        <h2>{{ user.username }}</h2>
-        <a>Send Friend Request</a>
+        {% include "card-user.html" %}
     {% endfor %}
 </div>
 {% endblock %}

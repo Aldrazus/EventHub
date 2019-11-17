@@ -157,3 +157,29 @@ body {
 .card-event:hover {
   transform: scale(1.01)
 }
+
+/*
+  USER CARDS
+*/
+.container-users {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-user {
+  width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 3px 5px 5px #c4c4c4;
+  transition: ease-in-out 0.2s;
+}
+
+.card-user:hover {
+  transform: scale(1.01)
+}

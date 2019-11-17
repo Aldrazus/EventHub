@@ -14,8 +14,7 @@ followers = db.Table('followers',
 #https://stackoverflow.com/questions/9116924/how-can-i-achieve-a-self-referencing-many-to-many-relationship-on-the-sqlalchemy
 friends = db.Table('friends',
     db.Column('friender_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('friendee_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('status', db.Integer)
+    db.Column('friended_id', db.Integer, db.ForeignKey('user.id')),
 )
 
 #   User Class - model representing app users, can either be 'Student' or 'Event Organizer'
@@ -59,14 +58,29 @@ class User(UserMixin, db.Model):
         'User', secondary=friends,
         #used to remove foreign key ambiguity error
         primaryjoin=(friends.c.friender_id == id),
-        secondaryjoin=(friends.c.friendee_id == id),
+        secondaryjoin=(friends.c.friended_id == id),
         backref=db.backref('friends', lazy='dynamic'), lazy='dynamic'
     )
 
     #   Some useful functions related to friends
 
-    def is_friends(self, user):
-        return
+    def has_friended(self, user):
+        return self.friended.filter(friends.c.friended_id == user.id).count() > 0
+
+    def is_friends_with(self, user):
+        return self.has_friended(user) and user.has_friended(self)
+
+    def friend(self, user):
+        if not self.has_friended(user):
+            self.friended.append(user)
+    
+    def unfriend(self, user):
+        if self.has_friended(user):
+            self.friended.remove(user)
+        if user.has_friended(self):
+            user.friended.remove(self)
+
+
 
 
 
@@ -86,18 +100,6 @@ class User(UserMixin, db.Model):
     def unfollow(self, event):
         if self.is_following(event):
             self.followed.remove(event)
-
-    #   Some useful functions related to friends
-
-    #send a friend request notification
-    #def send_friend_request(self, user):
-
-    #def accept_friend_request(self, user):
-
-    #   Some useful functions related to notifications
-
-    #can be post update, friend request, post creation by friend,  etc
-    #def send_notification(self, user_id=None, event_id=None):
 
 
     #   Some useful queries
