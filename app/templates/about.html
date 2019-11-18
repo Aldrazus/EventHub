@@ -2,4 +2,31 @@
 
 {% block user_content %}
 
+<div class="container">
+    <div class="border-bottom mb-3 align-items-center">
+        <h3 class="col-md-auto" style="color: steelblue">About</h3>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-3 border">
+                <ul class="text-dark">
+                    <li>User: {{user.username}}</li>
+                    <li>User ID: {{user.id}}</li>
+                    <li>User Email: {{user.email}}</li>
+                </ul>
+            </div>
+            <div class="col-9 border">
+                <h3 class="col-md-auto border-bottom" style="color: steelblue">{{user.username}}'s friends:</h3>
+                    <div class="row">
+                    {% for user in friends %}
+                        <div class="col-md-3">
+                        {% include "card-user.html" %}
+                        </div>
+                    {% endfor %}
+                    </div>  
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

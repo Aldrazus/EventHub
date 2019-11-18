@@ -1,24 +1,24 @@
 <div class="card-user">
-    <div class="card-content">
+    <div class="flex card-content">
         <h3>{{ user.username }}</h3>
         <h6>{{ user.role }}</h6>
         <p>Interests: {{ user.interests }}</p>
         {% if not current_user.is_friends_with(user) %}
-        {% if not user.has_friended(current_user) %}
-        {% if not current_user.has_friended(user) %}
-        <a href="{{url_for('home.friend', user_id=user.id)}}">Add Friend</a>
+            {% if not user.has_friended(current_user) %}
+                {% if not current_user.has_friended(user) %}
+                    <a href="{{url_for('home.friend', user_id=user.id)}}">Add Friend</a>
+                {% else %}
+                    <p>Friend Request Sent</p>
+                {% endif %}
+            {% else %}
+                <a href="{{url_for('home.friend', user_id=user.id)}}">Confirm</a>
+                <a href="{{url_for('home.unfriend', user_id=user.id)}}">Delete</a>
+            {% endif %}
         {% else %}
-        <p>Friend Request Sent</p>
-        {% endif %}
-        {% else %}
-        <a href="{{url_for('home.friend', user_id=user.id)}}">Confirm</a>
-        <a href="{{url_for('home.unfriend', user_id=user.id)}}">Delete</a>
-        {% endif %}
-        {% else %}
-        <a href="{{url_for('home.unfriend', user_id=user.id)}}">Unfriend</a>
+            <a href="{{url_for('home.unfriend', user_id=user.id)}}">Unfriend</a>
         {% endif %}
 	<br>
 
-	<a href="{{url_for('auth.user', username=user.username)}}">View Profile</a>
+	<a href="{{url_for('auth.profile', username=user.username)}}">View Profile</a>
     </div>
 </div>

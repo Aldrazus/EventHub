@@ -12,10 +12,10 @@ import config
 mod = Blueprint('home', __name__,
                         template_folder='app/templates')
 
-@mod.route('/')
+@mod.route('/home')
 @login_required
 def index():
-    return 'index page'
+    return render_template("home.html", title="Home")
 
 #   Search Route
 #   TODO: ADD BACK PAGES

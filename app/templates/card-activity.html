@@ -1,0 +1,9 @@
+<div class="card-activity col-md-8 offset-md-2 card border border-dark">
+        <p class="text-right text-muted small">{{item.time}}</p>
+        <p class="text-center">
+            {{ user.username + " " + item.verb }} 
+            <a href="/{{item.type}}/{{item.receiver_id}}">
+                {{ item.type }}
+            </a>
+        </p>
+</div>

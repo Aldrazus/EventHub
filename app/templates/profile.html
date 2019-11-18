@@ -9,9 +9,11 @@
     <div class="banner">
         <div class="row coverbg bg-lav" style="margin-top: -15px;">
             <div class="col-md-3 align-self-baseline">
-                <img class="img-fluid img-thumbnail" src="{{ url_for('static', filename = "profile_pics/" + user.img_file) }}" />
+                <div class="img-container" style="width:200px; height: 200px;">
+                    <img class="img-fluid img-thumbnail" src="{{ url_for('static', filename = "profile_pics/" + user.img_file) }}" />
+                </div>
             </div>
-            <div class="col-md-auto align-self-baseline" style="padding-bottom: 0.5rem;">
+            <div class="col-lg-auto align-self-baseline" style="padding-bottom: 0.5rem;">
                 <h1><a class="text-dark" style="color: royalblue;" href="">{{ user.username }}</a></h1>
             </div>
             <div class="col-md-3 ml-auto card align-self-end bg-lavlight">
@@ -35,7 +37,7 @@
 
         {% block user_content %}
 
-        <div class="col-md-5 ml-3">
+        <div class="col-lg-5 ml-3">
             <div class="row mb-3">
                 <div class="col-md-12 card bg-lav">
                     <div class="row mb-3 border-bottom border-light">
@@ -88,26 +90,16 @@
         </div>
         -->
 
-        <div class="col-md-6 ml-5 card bg-lav border">
+        <div class="col-lg-6 ml-5 card bg-lav border">
             <div class="row mb-3 border-bottom border-light">
-                <div class="col-md-12">
+                <div class="col-12">
                     <h4 class="text-center">Recent Activity</h4>
                 </div>
             </div>
             <div class="row mb-3">
                 {% for item in activity %}
                 <!-- Activity Card -->
-                <div class="col-md-10 offset-md-1 card border border-dark mb-3 h-75">
-                    <div class="container">
-                        <p class = "text-right">{{item.time}}</p>
-                    <p class="text-center">
-                        {{ user.username + " " + item.verb }} 
-                        <a href="/{{item.type}}/{{item.receiver_id}}">
-                            {{ item.type }}
-                        </a>
-                    </p>
-                    </div>
-                </div>
+                    {% include "card-activity.html" %}
                 {% endfor %}
             </div>
         </div>

@@ -18,7 +18,7 @@ mod = Blueprint('auth', __name__,
 @mod.route('/')
 @login_required
 def index():
-    return render_template("home.html", title="Home")
+    return redirect(url_for('home.index'))
 
 #   Login Route
 @mod.route('/login', methods=['GET', 'POST'])

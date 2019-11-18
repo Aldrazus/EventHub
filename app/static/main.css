@@ -159,6 +159,17 @@ body {
 }
 
 /*
+  ACTIVITY CARDS
+*/
+.card-activity {
+  width: 100%;
+  height: auto;
+  background-color: beige;
+  box-shadow: 3px 5px 5px #c4c4c4;
+  transition: ease-in-out 0.2s;
+}
+
+/*
   USER CARDS
 */
 .container-users {
@@ -178,6 +189,7 @@ body {
   background-color: white;
   box-shadow: 3px 5px 5px #c4c4c4;
   transition: ease-in-out 0.2s;
+  word-wrap:break-word;
 }
 
 .card-user:hover {

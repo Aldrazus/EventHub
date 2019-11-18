@@ -85,17 +85,6 @@ def followed(username):
 @mod.route('/profile/<string:username>/about')
 @login_required
 def about(username):
-    user = {
-        'username': username,
-        'role': 'Event Organizer',
-        'about': 'This is an example About Me section.',
-        'img_file': url_for('static', filename='profile_pics/default.jpg'),
-        'interests': [
-            'Computer Science',
-            'Sports',
-            'Basketball',
-            'Movies'
-        ]
-    }
-    info = {}
-    return render_template('about.html', user=user, info=info)
+    user = User.query.filter_by(username=username).first()
+    friends = user.friended
+    return render_template('about.html', user=user, friends=friends)
