@@ -146,6 +146,10 @@ def friend(user_id):
     if user is None:
         flash('User {} not found.'.format(user_id))
         return redirect(url_for('auth.index'))
+    if user == current_user:
+        flash('Cannot friend yourself!')
+        return redirect(url_for('auth.index'))
+        
     current_user.friend(user)
     db.session.commit()
     flash('You have friended {}'.format(user.username))

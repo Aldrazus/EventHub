@@ -31,6 +31,7 @@ def post():
             location=form.location.data
         )
         db.session.add(event)
+        current_user.notify_friends(event)
         db.session.commit()
 
         if False: #TODO: do some checks on the form

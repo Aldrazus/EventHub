@@ -3,6 +3,7 @@
         <h3>{{ user.username }}</h3>
         <h6>{{ user.role }}</h6>
         <p>Interests: {{ user.interests }}</p>
+        {% if current_user != user %}
         {% if not current_user.is_friends_with(user) %}
         {% if not user.has_friended(current_user) %}
         {% if not current_user.has_friended(user) %}
@@ -16,6 +17,7 @@
         {% endif %}
         {% else %}
         <a href="{{url_for('home.unfriend', user_id=user.id)}}">Unfriend</a>
+        {% endif %}
         {% endif %}
 	<br>
 

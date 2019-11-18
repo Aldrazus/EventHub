@@ -35,9 +35,11 @@
                             <a class="nav-item nav-link" href="{{ url_for('auth.register') }}">Register</a>
                         {% else %}
                             <a class="nav-item nav-link" href="{{ url_for('home.search') }}">Search</a>
+                            <a class="nav-item nav-link" href="{{ url_for('home.search_user') }}">Find Users</a>
                             {% if current_user.role == "Event Organizer" %}
                                 <a class="nav-item nav-link" href="{{ url_for('organizer.post') }}">Post</a>
                             {% endif %}
+                            <a class="nav-item nav-link" href="{{ url_for('home.notifications') }}">Notifications {% if current_user.notifications.filter_by(read=0).count() > 0 %}🔴{% endif %}</a>
                             <!-- Account Settings/Logout Dropdown -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">

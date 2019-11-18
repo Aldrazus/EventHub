@@ -183,3 +183,25 @@ body {
 .card-user:hover {
   transform: scale(1.01)
 }
+
+/*
+  NOTIFICATION CARDS
+*/
+.container-notifs {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-style: solid;
+  border-width: 1px;
+  border-color: royalblue;
+}
+
+.card-notif {
+  width: 100%;
+  height: auto;
+  padding: 20px;
+  border-bottom: 1px solid #dee2e6;
+}

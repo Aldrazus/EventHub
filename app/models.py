@@ -2,6 +2,8 @@ from flask_login import UserMixin
 from app import login_manager, db
 from werkzeug.security import generate_password_hash, check_password_hash
 from time import time
+from datetime import datetime
+
 
 #many to many association table for user following events
 followers = db.Table('followers',
@@ -73,6 +75,10 @@ class User(UserMixin, db.Model):
     def friend(self, user):
         if not self.has_friended(user):
             self.friended.append(user)
+            if not user.has_friended(self):
+                category = 'request'
+                description = "{} has sent you a friend request!".format(self.username)
+                user.add_notification(self.id, category, description)
     
     def unfriend(self, user):
         if self.has_friended(user):
@@ -80,6 +86,18 @@ class User(UserMixin, db.Model):
         if user.has_friended(self):
             user.friended.remove(self)
 
+    #   Some useful functions related to notifications
+
+    def add_notification(self, sender_id, category, description):
+        notif = Notification(category=category, sender_id=sender_id, description=description, read=0, user=self)
+        db.session.add(notif)
+
+    def notify_friends(self, event):
+        for user in self.friended:
+            if self.is_friends_with(user):
+                category = 'post'
+                description = "{} posted a new event: {}".format(self.username, event.event_name)
+                user.add_notification(event.id, category, description)
 
 
 
@@ -151,6 +169,13 @@ class Event(UserMixin, db.Model):
     def get_creator(self):
         return User.query.filter_by(id=self.owner_id).first()
 
+    def notify_followers(self):
+        creator = self.get_creator()
+        for user in self.followers:
+            category = 'update'
+            description = "{} has updated an event you are following: {}".format(creator.username, self.event_name)
+            user.add_notification(self.id, category, description)
+
 
 class EventStats(UserMixin, db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)
@@ -159,9 +184,13 @@ class EventStats(UserMixin, db.Model):
 class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     #type field maybe? can be create, update, etc.
+    category = db.Column(db.String(120))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    timestamp = db.Column(db.Float, index=True, default=time)
+    sender_id = db.Column(db.Integer)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.now())
     description = db.Column(db.Text)
+    read = db.Column(db.Integer) #unread = 0, read = 1
+    #link to user/event profile depending on type.
     #link = db.Column(db.String(120)) #link to event page or friend request or something
     
 
