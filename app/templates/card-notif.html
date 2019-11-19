@@ -2,11 +2,11 @@
     <div class="card-content">
         <h6>{{ notif.description }} {{ moment(notif.timestamp).fromNow() }}</h6>
         {% if notif.category == "post" %}
-        <a href="">View Event</a>
+        <a href="{{url_for('home.event_info', event_id=notif.sender_id)}}">View Event</a>
         {% elif notif.category == "update" %}
-        <a href="">View Event</a>
+        <a href="{{url_for('home.event_info', event_id=notif.sender_id)}}">View Event</a>
         {% elif notif.category == "request" %}
-        <a href="">Accept</a>
+        <a href="{{url_for('home.friend', user_id=notif.sender_id)}}">Accept</a>
         {% endif %}
 	<br>
     </div>

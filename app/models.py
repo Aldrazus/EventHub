@@ -125,10 +125,9 @@ class User(UserMixin, db.Model):
 
     #   Some useful queries
 
-    #get all events a user is following joined with the creators of those events
+    #get all events a user is following joined with the creators of those events TODO: DEPRECATED, JUST USE SELF.FOLLOWED
     def get_followed_events(self):
-        followed_events = db.session.query(User, Event).join(User.followed)
-        return followed_events.filter(User.id == self.id)
+        return self.followed
 
     #returns tuple of (User, Event) fields. Index 0 for user fields, 1 for event fields
     #TODO: dont return a tuple, just get events and use Event.get_creator() function - done
@@ -185,7 +184,7 @@ class EventStats(UserMixin, db.Model):
 
 class UserActivity(db.Model):
     id = db.Column(db.Integer, primary_key=True) # activity id
-    user_id = db.Column(db.Integer, db.ForeignKey('User.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     # Who receives the action (if any) (e.g. user follows ->event)
     receiver_id = db.Column(db.Integer)
     # What is the receiver (event, user)
