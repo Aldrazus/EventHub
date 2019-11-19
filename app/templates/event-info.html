@@ -1,23 +1,42 @@
 {% extends "base.html" %}
 {% set author = event.get_creator() %}
 
+
+
 {% block content %}
-<div class = "event-detail">
-	<h1>{{ event.event_name }}</h1>
-	<h4>Hosted by {% if author %}{{ author.username }}{% else %}$hostname{% endif %}</h4>
-	<h4>Date: {{ moment(event.start_time).format('LLL') }}</h4>
-	<h4>Location: {{ event.location }}</h4>
-	<h4>Description: </h4> 
-	<pre>
-	{{ event.description }} 
-	</pre>
-	<a href="{{url_for('home.follow', event_id=event.id)}}">Follow</a>
-	<a href="{{url_for('home.unfollow', event_id=event.id)}}">Unfollow</a>
-	<br>
-	<a href="{{url_for('home.calendar_insert', event_id=event.id)}}" >Add to Calendar</a>
+    <div class = "content-section">
+        <form action="" method="POST">
+            <fieldset class="form-group">
+                <div class = "event-detail">
+			<legend class="border-bottom mb-4"><h1>{{ event.event_name }}</h1></legend>
+			<h4>Hosted by {% if author %}{{ author.username }}{% else %}$hostname{% endif %}</h4>
 
+			{% if moment(event.start_time).format('LL') == moment(event.end_time).format('LL') %}
+			<h4>Date: {{ moment(event.start_time).format('LL') }}</h4>
+				{% if moment(event.start_time).format('LT') == moment(event.end_time).format('LT') %}
+				<h4>Time: {{ moment(event.start_time).format('LT') }}</h4>
+				{% else %}
+				<h4>Time: {{ moment(event.start_time).format('LT') }} to {{ moment(event.end_time).format('LT') }}</h4>
+				{% endif %}
+			{% else %}
+			<h4>Start Date: {{ moment(event.start_time).format('LL') }} at {{ moment(event.start_time).format('LT') }}</h4>
+			<h4>End Date: {{ moment(event.end_time).format('LL') }} at {{ moment(event.end_time).format('LT') }}</h4>
+			{% endif %}
+
+			<h4>Location: {{ event.location }}</h4>
+			<h4>Description: </h4> 
 	
+			<p> {{ event.description }} </p>
 
-
-</div>
+			{% if current_user.is_following(event) %}
+        		<a href="{{url_for('home.unfollow', event_id=event.id)}}">Unfollow</a>
+        		{% else %}
+        		<a href="{{url_for('home.follow', event_id=event.id)}}">Follow</a>
+        		{% endif %}
+			<br>
+			<a href="{{url_for('home.calendar_insert', event_id=event.id)}}" >Add to Calendar</a>
+		</div>              
+            </fieldset>
+        </form>
+    </div>  
 {% endblock %}
