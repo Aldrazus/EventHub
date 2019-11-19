@@ -86,8 +86,9 @@ def save_picture(form_picture):
     picture_path = os.path.join(current_app.root_path, 'static/profile_pics', picture_fn)
     output_size = (250, 250)
     img = Image.open(form_picture)
-    new_img = img.resize(output_size)
-    new_img.save(picture_path)
+    # thumbnail works better than resize
+    img.thumbnail(output_size)
+    img.save(picture_path)
     # By overwriting the file to have the same path, the old image is still 
     # cached, but using a new path will require changes to make sure old
     # profile pictures will get deleted

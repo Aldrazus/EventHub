@@ -1,9 +1,17 @@
-<div class="card-activity col-md-8 offset-md-2 card border border-dark">
-        <p class="text-right text-muted small">{{item.time}}</p>
+<div class="card-activity col-md-8 offset-md-2 card border border-dark mb-3">
+        <p class="text-right text-muted small">{{ moment(item.time).fromNow() }}</p>
         <p class="text-center">
-            {{ user.username + " " + item.verb }} 
+            <a href="/profile/{{ user.username }}">{{ user.username }}</a> {{" " + item.verb }} 
+            {% if item.type == "event" %}
+            an 
             <a href="/{{item.type}}/{{item.receiver_id}}">
                 {{ item.type }}
             </a>
+            {% else %}
+                <a href="/{{item.type}}/{{item.receiver_id}}">
+                    {{ item.type }}
+                </a>
+
+            {% endif %}
         </p>
 </div>

@@ -1,0 +1,13 @@
+<div class="card-notif" style="background-color:{% if notif.read == 0 %}white{% else %}lightgray{% endif %}">
+    <div class="card-content">
+        <h6>{{ notif.description }} {{ moment(notif.timestamp).fromNow() }}</h6>
+        {% if notif.category == "post" %}
+        <a href="">View Event</a>
+        {% elif notif.category == "update" %}
+        <a href="">View Event</a>
+        {% elif notif.category == "request" %}
+        <a href="">Accept</a>
+        {% endif %}
+	<br>
+    </div>
+</div>

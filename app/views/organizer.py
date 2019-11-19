@@ -33,6 +33,7 @@ def post():
         )
         # 
         db.session.add(event)
+        db.session.flush()
 
         user_action = UserActivity(
             user_id = current_user.id,
@@ -53,6 +54,7 @@ def post():
         db.session.add(user_action)
         db.session.add(event_action)
 
+        current_user.notify_friends(event)
         db.session.commit()
 
         if False: #TODO: do some checks on the form

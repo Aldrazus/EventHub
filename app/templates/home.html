@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Welcome, {{ current_user.username }}!</h1>
-    <h2>You are a {{ current_user.role }}.</h2>
+    <div class="content-section">
+        <h5 class="text-muted">Welcome, {{ current_user.username }}!</h5>
+    </div>
 {% endblock %}

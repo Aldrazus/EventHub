@@ -1,24 +1,43 @@
 <div class="card-user">
     <div class="flex card-content">
-        <h3>{{ user.username }}</h3>
-        <h6>{{ user.role }}</h6>
-        <p>Interests: {{ user.interests }}</p>
-        {% if not current_user.is_friends_with(user) %}
-            {% if not user.has_friended(current_user) %}
-                {% if not current_user.has_friended(user) %}
-                    <a href="{{url_for('home.friend', user_id=user.id)}}">Add Friend</a>
-                {% else %}
-                    <p>Friend Request Sent</p>
-                {% endif %}
-            {% else %}
-                <a href="{{url_for('home.friend', user_id=user.id)}}">Confirm</a>
-                <a href="{{url_for('home.unfriend', user_id=user.id)}}">Delete</a>
-            {% endif %}
-        {% else %}
-            <a href="{{url_for('home.unfriend', user_id=user.id)}}">Unfriend</a>
-        {% endif %}
-	<br>
+        <div class="row mb-1">
+            <div class="col-md-6">
+                <img class="img img-thumbnail" src="{{ url_for('static', filename = "profile_pics/" + user.img_file) }}">
+            </div>
+            <div class="col-md-6">
+                <h5 class="text-muted">{{ user.username }}</h5>
+                <h6>{{ user.role }}</h6>
+            </div>
+        </div>
+        <div class="row align-items-center text-center">
+            <div class="col-md-12">
+                <p>Interests: {{ user.interests }}</p>
+            </div>
+            <div class="col-md-6">
+                {% if current_user != user %}
+                    {% if not current_user.is_friends_with(user) %}
+                        {% if not user.has_friended(current_user) %}
+                            {% if not current_user.has_friended(user) %}
+                                <a href="{{url_for('home.friend', user_id=user.id)}}"><span class="badge badge-success">Add Friend</span></a>
+                            {% else %}
+                                <p class="text-info small">Friend Request Sent</p>
+                            {% endif %}
+                        {% else %}
+                            <h5 class="text-info small">Confirm Friend Request?</h5>
+                            <a href="{{url_for('home.friend', user_id=user.id)}}"><span class="badge badge-success">Confirm</span></a>
+                            <a href="{{url_for('home.unfriend', user_id=user.id)}}"><span class="badge badge-danger">Delete</span></a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{{url_for('home.unfriend', user_id=user.id)}}"><span class="badge badge-danger">Unfriend</span></a>
+                    {% endif %}
+                {% endif %}    
+            </div>
+            <div class="col-md-6">
+                <a href="{{url_for('auth.profile', username=user.username)}}">
+                    <span class="badge badge-info">View Profile</span>
+                </a>
+            </div>
+        </div>
 
-	<a href="{{url_for('auth.profile', username=user.username)}}">View Profile</a>
     </div>
 </div>

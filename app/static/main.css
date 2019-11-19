@@ -186,7 +186,7 @@ body {
   height: auto;
   margin-bottom: 20px;
   padding: 20px;
-  background-color: white;
+  background-color: rgb(215, 235, 252);
   box-shadow: 3px 5px 5px #c4c4c4;
   transition: ease-in-out 0.2s;
   word-wrap:break-word;
@@ -194,4 +194,26 @@ body {
 
 .card-user:hover {
   transform: scale(1.01)
+}
+
+/*
+  NOTIFICATION CARDS
+*/
+.container-notifs {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-style: solid;
+  border-width: 1px;
+  border-color: royalblue;
+}
+
+.card-notif {
+  width: 100%;
+  height: auto;
+  padding: 20px;
+  border-bottom: 1px solid #dee2e6;
 }

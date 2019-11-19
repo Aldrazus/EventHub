@@ -16,8 +16,35 @@
             <div class="col-lg-auto align-self-baseline" style="padding-bottom: 0.5rem;">
                 <h1><a class="text-dark" style="color: royalblue;" href="">{{ user.username }}</a></h1>
             </div>
-            <div class="col-md-3 ml-auto card align-self-end bg-lavlight">
-                <h4 class="text-center">{{user.role}}</h4>
+            
+            <div class="col-md-3 ml-auto align-self-end">
+                <div class="row align-items-end text-right">
+                    <div class="col-12">
+                        {% if current_user != user %}
+                            {% if not current_user.is_friends_with(user) %}
+                                {% if not user.has_friended(current_user) %}
+                                    {% if not current_user.has_friended(user) %}
+                                    <span class="badge badge-info bg-tag">{{item.strip()}}</span>
+                                        <a href="{{url_for('home.friend', user_id=user.id)}}"><span class="badge badge-success">Add Friend</span></a>
+                                    {% else %}
+                                        <p>Friend Request Sent</p>
+                                    {% endif %}
+                                {% else %}
+                                    <h5 class="text-info small">Confirm Friend Request?</h5>
+                                    <a href="{{url_for('home.friend', user_id=user.id)}}"><span class="badge badge-success">Confirm</span></a>
+                                    <a href="{{url_for('home.unfriend', user_id=user.id)}}"><span class="badge badge-danger">Delete</span></a>
+                                {% endif %}
+                            {% else %}
+                                <a href="{{url_for('home.unfriend', user_id=user.id)}}"><span class="badge badge-danger">Unfriend</span></a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row card bg-lavlight" style="margin-top: 10px">
+                    <div class="col-auto">
+                         <h4 class="text-center">{{user.role}}</h4>
+                    </div> 
+                </div>
             </div>
         </div>
 
