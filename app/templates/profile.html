@@ -27,7 +27,7 @@
                                     <span class="badge badge-info bg-tag">{{item.strip()}}</span>
                                         <a href="{{url_for('home.friend', user_id=user.id)}}"><span class="badge badge-success">Add Friend</span></a>
                                     {% else %}
-                                        <p>Friend Request Sent</p>
+                                        <p class="text-info">Friend Request Sent</p>
                                     {% endif %}
                                 {% else %}
                                     <h5 class="text-info small">Confirm Friend Request?</h5>

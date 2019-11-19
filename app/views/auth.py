@@ -106,12 +106,14 @@ def settings():
         current_user.email = form.email.data
         current_user.about = form.about.data
         current_user.interests = form.interests.data
+        current_user.private = form.private.data
         db.session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('auth.settings'))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
+        form.private.data = current_user.private
         form.about.data = current_user.about
         form.interests.data = current_user.interests
     return render_template('settings.html', title='Settings', form=form)

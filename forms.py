@@ -2,7 +2,7 @@ from flask import request
 from flask_wtf import FlaskForm
 from flask_login import current_user
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, PasswordField, SubmitField, RadioField, TextAreaField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, RadioField, TextAreaField, SelectField, BooleanField
 from wtforms.fields.html5 import DateTimeLocalField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Required, regexp, Length
 from app.models import User
@@ -74,6 +74,7 @@ class AccountSettingsForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
+    private = BooleanField('Make Email Private?')
     about = TextAreaField('About', validators=[Length(max=256)])
     interests = TextAreaField('Interests', validators=[Length(max=256)])
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
