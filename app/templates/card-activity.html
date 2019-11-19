@@ -12,16 +12,16 @@
         </div>
         <div class="col-md-9">
             <p class="text-center">
-                    <a href="/profile/{{ user.username }}">{{ user.username }}</a> {{" " + item.verb }} 
+                    <a href="/profile/{{ user.username }}">{{ user.username }}</a>  
                     {% if item.type == "event" %}
-                    an 
+                    {{" " + item.verb + " an" }} 
                     <a href="/{{item.type}}/{{item.receiver_id}}">
                         {{ item.type }}
                     </a>
                     {% else %}
-                        <a href="/{{item.type}}/{{item.receiver_id}}">
-                            {{ item.type }}
-                        </a>
+                        {% if item.verb == "registered" %}
+                          joined EventHub!
+                        {% endif %}
                     {% endif %}
             </p>
         </div>

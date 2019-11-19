@@ -65,7 +65,7 @@ def register():
             )
         user.set_password(form.password.data)
         db.session.add(user)
-
+        db.session.flush()
         activity = UserActivity(
             user_id = user.id,
             type = "user",

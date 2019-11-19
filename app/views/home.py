@@ -17,6 +17,29 @@ mod = Blueprint('home', __name__,
 def index():
     return render_template("home.html", title="Home")
 
+@mod.route('/eventfeed')
+@login_required
+def eventfeed():
+    return render_template("eventfeed.html", title="Events", )
+
+@mod.route('/global/user')
+@login_required
+def global_user_feed():
+    user_activity = db.session.query(User, UserActivity).filter(
+        User.id == UserActivity.user_id
+    ).order_by(UserActivity.time.desc())
+    '''
+        activity = UserActivity.query.order_by(
+                UserActivity.time.desc()
+                ).join(User).filter_by()
+    '''
+    return render_template("global-user.html", title="Global", user_activity=user_activity)
+
+@mod.route('/global/event')
+@login_required
+def global_event_feed():
+    return render_template("global-event.html", title="Global")
+
 #   Search Route
 #   TODO: ADD BACK PAGES
 @mod.route('/search')

@@ -7,6 +7,8 @@
         </div>
         <div class="row">
             {% for e in events %}
+            
+                {{ e.author }}
                 <div class="col-md-4 container-events">
                     {% set event = e[1] %}
                     {% set author = e[0] %}

@@ -185,7 +185,7 @@ class EventStats(UserMixin, db.Model):
 
 class UserActivity(db.Model):
     id = db.Column(db.Integer, primary_key=True) # activity id
-    user_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'))
     # Who receives the action (if any) (e.g. user follows ->event)
     receiver_id = db.Column(db.Integer)
     # What is the receiver (event, user)
