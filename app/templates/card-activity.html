@@ -1,17 +1,29 @@
 <div class="card-activity col-md-8 offset-md-2 card border border-dark mb-3">
+    <div class="row align-self-end mr-1">
         <p class="text-right text-muted small">{{ moment(item.time).fromNow() }}</p>
-        <p class="text-center">
-            <a href="/profile/{{ user.username }}">{{ user.username }}</a> {{" " + item.verb }} 
-            {% if item.type == "event" %}
-            an 
-            <a href="/{{item.type}}/{{item.receiver_id}}">
-                {{ item.type }}
-            </a>
-            {% else %}
-                <a href="/{{item.type}}/{{item.receiver_id}}">
-                    {{ item.type }}
-                </a>
-
-            {% endif %}
-        </p>
+    </div>
+    <div class="row text-center">
+        <div class="col-md-3 align-items-start text-center">
+        <a href="/profile/{{user.username}}" class="avatar"
+            style="background-image: url('{{ url_for('static', filename = "profile_pics/" + user.img_file) }}');">
+        </a>
+           <!-- <img class="img img-thumbnail" src="{{ url_for('static', filename = "profile_pics/" + user.img_file) }}">
+            -->
+        </div>
+        <div class="col-md-9">
+            <p class="text-center">
+                    <a href="/profile/{{ user.username }}">{{ user.username }}</a> {{" " + item.verb }} 
+                    {% if item.type == "event" %}
+                    an 
+                    <a href="/{{item.type}}/{{item.receiver_id}}">
+                        {{ item.type }}
+                    </a>
+                    {% else %}
+                        <a href="/{{item.type}}/{{item.receiver_id}}">
+                            {{ item.type }}
+                        </a>
+                    {% endif %}
+            </p>
+        </div>
+    </div>
 </div>

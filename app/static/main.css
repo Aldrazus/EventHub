@@ -217,3 +217,14 @@ body {
   padding: 20px;
   border-bottom: 1px solid #dee2e6;
 }
+
+.avatar {
+  display: inline-block;
+  border-radius: 3px;
+  height: 50px;
+  margin-top: 9px;
+  width: 50px;    
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
