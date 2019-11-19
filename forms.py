@@ -42,7 +42,20 @@ class PostForm(FlaskForm):
     #    FileAllowed(['jpg', 'png'], 'Images only')
     #])
 
-    location = StringField('Location', validators=[DataRequired()])
+    location = SelectField('Location', validators=[DataRequired()], 
+	choices=[
+	('College of Arts & Science', 'College of Arts & Science'), 
+	('College of Dentistry', 'College of Dentistry'), 
+	('Gallatin School of Individualized Study', 'Gallatin School of Individualized Study'), 
+	('Leonard N. Stern School of Business', 'Leonard N. Stern School of Business'), 
+	('Liberal Studies', 'Liberal Studies'), 
+	('Rory Meyers College of Nursing', 'Rory Meyers College of Nursing'), 
+	('Steinhardt School of Culture, Education, and Human Development', 'Steinhardt School of Culture, Education, and Human Development'), 
+	('Silver School of Social Work', 'Silver School of Social Work'), 
+	('School of Professional Studies', 'School of Professional Studies'), 
+	('Tandon School of Engineering', 'Tandon School of Engineering'), 
+	('Tisch School of the Arts', 'Tisch School of the Arts')
+	])
     #start = StringField('Start Time', validators=[DataRequired()])
     start = DateTimeLocalField('Start Time', format='%Y-%m-%dT%H:%M')
     end = DateTimeLocalField('End Time', format='%Y-%m-%dT%H:%M')
