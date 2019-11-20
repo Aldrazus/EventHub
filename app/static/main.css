@@ -228,3 +228,11 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+.event-details {
+  background: whitesmoke;
+  padding: 10px 20px;
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}

@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="content-section">
-        <div class="row border-bottom">
+        <div class="row border-bottom mb-3">
             <div class="col-md-7">
                 <h5 class="text-muted">Welcome, {{ current_user.username }}!</h5>
                 <h5 class="text-muted">See what your friends have been up to:</h5>
@@ -10,6 +10,12 @@
             <div class="col-md-5 align-self-end text-right">
                 <h6 class="text-info small"><a href="{{ url_for('home.global_user_feed') }}">Or switch to global feed</a></h6>
             </div>
+        </div> 
+        <div class="row mb-5">
+            {% for user, item in user_activity %}
+            <!-- Activity Card -->
+                {% include "card-activity.html" %}
+            {% endfor %}
         </div>
     
     </div>

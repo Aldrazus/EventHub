@@ -5,41 +5,61 @@
 
 {% block content %}
     <div class = "content-section">
-        <form action="" method="POST">
-            <fieldset class="form-group">
-                <div class = "event-detail">
-			<legend class="border-bottom mb-4"><h1>{{ event.event_name }}</h1></legend>
-			<h4>Hosted by {% if author %}{{ author.username }}{% else %}$hostname{% endif %}</h4>
-			<h4>Description: </h4> 
-	
-			<p> {{ event.description }} </p>
+		<div class="row border-bottom heading">
+			<div class="col-md-10">
+				<legend class="mb-2"><h1 class="text-strong text-center text-wrap">{{ event.event_name }}</h1></legend>
+			</div>
+			<div class="col-md-2">
+				<div class="row mb-1">
+					{% if current_user.is_following(event) %}
+					<a class="badge badge-danger col-md-12 mb-1 text-wrap" href="{{url_for('home.unfollow', event_id=event.id)}}">-Unfollow</a>
+					{% else %}
+					<a class="badge badge-success col-md-12 text-wrap" href="{{url_for('home.follow', event_id=event.id)}}">+Follow</a>
+					{% endif %}
+				</div>
+				<div class="row mb-1">
+					<a class="badge badge-info text-wrap col-md-12" href="{{url_for('home.calendar_insert', event_id=event.id)}}" >Add to Calendar</a>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+				<div class="row">
+					<h5 class="col-md-12 text-right"><strong>Hosted by: </strong>{% if author %}
+						<a href="{{ url_for('auth.profile', username=author.username) }}">{{ author.username }}</a>
+						{% else %}$hostname{% endif %}
+					</h5>
+				</div>
+				<dl class="row">
+					<dt class="col-md-3">Description: </dt> 
+					<dd class="col-md-9"> {{ event.description }} </dd>
 
-			{% if moment(event.start_time).format('LL') == moment(event.end_time).format('LL') %}
-			<h4>Date: {{ moment(event.start_time).format('LL') }}</h4>
-				{% if moment(event.start_time).format('LT') == moment(event.end_time).format('LT') %}
-				<h4>Time: {{ moment(event.start_time).format('LT') }}</h4>
-				{% else %}
-				<h4>Time: {{ moment(event.start_time).format('LT') }} to {{ moment(event.end_time).format('LT') }}</h4>
-				{% endif %}
-			{% else %}
-			<h4>Start Date: {{ moment(event.start_time).format('LL') }} at {{ moment(event.start_time).format('LT') }}</h4>
-			<h4>End Date: {{ moment(event.end_time).format('LL') }} at {{ moment(event.end_time).format('LT') }}</h4>
-			{% endif %}
+					{% if moment(event.start_time).format('LL') == moment(event.end_time).format('LL') %}
+						<h4>Date: {{ moment(event.start_time).format('LL') }}</h4>
+						{% if moment(event.start_time).format('LT') == moment(event.end_time).format('LT') %}
+						<h4>Time: {{ moment(event.start_time).format('LT') }}</h4>
+						{% else %}
+						<h4>Time: {{ moment(event.start_time).format('LT') }} to {{ moment(event.end_time).format('LT') }}</h4>
+						{% endif %}
+					{% else %}
+					<dt class="col-md-3">Start Date: </dt>
+						<dd class="col-md-9">{{ moment(event.start_time).format('LL') }} at {{ moment(event.start_time).format('LT') }}</dd>
+						<dt class="col-md-3">End Date: </dt>
+						<dd class="col-md-9">{{ moment(event.end_time).format('LL') }} at {{ moment(event.end_time).format('LT') }}</dd>
+					{% endif %}
 
-			<h4>Location: {{ event.location }}</h4>
+					<dt class="col-md-3">Location: </dt>
+					<dd class="col-md-9">{{ event.location }}</dd>
 
-			<iframe width="600" height="450" frameborder="0" style="border:0" src={{ embed }} allowfullscreen></iframe>
-			
+					<div class="col-12">
+						<iframe class="embed-responsive embed-responsive-16by9" width="600" height="450" 
+								frameborder="0" style="border:0" src={{ embed }} allowfullscreen>
+						</iframe>
+					</div>
+				
+				</dl>
+			</div>
+		</div>  
+	</div>
 
-			{% if current_user.is_following(event) %}
-        		<a href="{{url_for('home.unfollow', event_id=event.id)}}">Unfollow</a>
-        		{% else %}
-        		<a href="{{url_for('home.follow', event_id=event.id)}}">Follow</a>
-        		{% endif %}
-			<br>
-			<a href="{{url_for('home.calendar_insert', event_id=event.id)}}" >Add to Calendar</a>
-		</div>              
-            </fieldset>
-        </form>
-    </div>  
 {% endblock %}
