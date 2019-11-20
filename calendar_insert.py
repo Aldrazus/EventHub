@@ -9,7 +9,7 @@ from google.auth.transport.requests import Request
 
 
 
-def insert(event_name, event_location, event_description, event_start_time, event_end_time):
+def CalenderInsert(event_name, event_location, event_description, event_start_time, event_end_time):
     # If modifying these scopes, delete the file token.pickle.
     SCOPES = ['https://www.googleapis.com/auth/calendar']
      
@@ -28,11 +28,10 @@ def insert(event_name, event_location, event_description, event_start_time, even
             flow = InstalledAppFlow.from_client_secrets_file(
                 'credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open('token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
+
 
     service = build('calendar', 'v3', credentials=creds)
+
 
     event = {
         'summary': event_name,
@@ -48,5 +47,5 @@ def insert(event_name, event_location, event_description, event_start_time, even
 
     # Insert Event into the Calendar API
     event = service.events().insert(calendarId='primary', body=event).execute()
-    print('Event created: %s' % (event.get('htmlLink')))
+    
 
