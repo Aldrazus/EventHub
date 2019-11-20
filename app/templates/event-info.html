@@ -16,10 +16,21 @@
 					{% else %}
 					<a class="badge badge-success col-md-12 text-wrap" href="{{url_for('home.follow', event_id=event.id)}}">+Follow</a>
 					{% endif %}
+					
 				</div>
 				<div class="row mb-1">
 					<a class="badge badge-info text-wrap col-md-12" href="{{url_for('home.calendar_insert', event_id=event.id)}}" >Add to Calendar</a>
 				</div>
+				{% if not current_user.has_rsvped(event) %}
+				<div class="row mb-1">
+					<a class="badge badge-info text-wrap col-md-12" href="{{url_for('home.rsvp_event', event_id=event.id)}}">One-Click RSVP</a>
+				</div>
+				{% endif %}
+				{% if current_user == event.get_creator() %}
+				<div class="row mb-1">
+					<a class="badge badge-info text-wrap col-md-12" href="{{url_for('organizer.update', event_id=event.id)}}">Update</a>
+				</div>
+				{% endif %}
 			</div>
 		</div>
 		<div class="row">
@@ -56,6 +67,15 @@
 								frameborder="0" style="border:0" src={{ embed }} allowfullscreen>
 						</iframe>
 					</div>
+
+					<dt class="col-md-3">Views: </dt> 
+					<dd class="col-md-9"> {{ event.get_view_count() }} </dd>
+
+					<dt class="col-md-3">Followers: </dt> 
+					<dd class="col-md-9"> {{ event.get_follower_count() }} </dd>
+
+					<dt class="col-md-3">RSVP Count: </dt> 
+					<dd class="col-md-9"> {{ event.get_rsvp_count() }} </dd>
 				
 				</dl>
 			</div>

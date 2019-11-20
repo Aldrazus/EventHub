@@ -247,6 +247,10 @@ class Event(UserMixin, db.Model):
     def get_rsvp_count(self):
         return self.rsvpers.count()
 
+    #   Returns number of followers
+    def get_follower_count(self):
+        return self.followers.count()
+
 
 class EventStats(UserMixin, db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)

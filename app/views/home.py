@@ -238,12 +238,7 @@ def rsvp_event(event_id):
     current_user.rsvp(event)
     db.session.commit()
     flash('You have RSVP\'d this event: {}'.format(event.event_name))
-    #next_page functionality sourced from:
-    #https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins
-    next_page = request.args.get('next')
-    if not next_page or url_parse(next_page).netloc != '':
-        next_page = url_for('auth.index')
-    return redirect(next_page)
+    return redirect(url_for('home.event_info', event_id=event_id))
 
 #   Notifications Route
 @mod.route('/notifications')
