@@ -12,9 +12,7 @@ import os
 mod = Blueprint('auth', __name__,
                         template_folder='app/templates')
 
-
-#some code from Miguel Grinberg's blog
-#https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins
+#   Home/Index Route
 @mod.route('/')
 @login_required
 def index():
@@ -76,10 +74,11 @@ def register():
 
         db.session.commit()
 
-        flash('successful registration')
+        flash('You have registered successfully')
         return redirect(url_for('auth.login'))
     return render_template('register.html', title="Register", form=form)
 
+#   Renames profile picture file to <user_id>.<file_ext> and saves it in the appropriate folder
 def save_picture(form_picture):
     _, f_ext = os.path.splitext(form_picture.filename)
     picture_fn = str(current_user.id) + f_ext
@@ -94,6 +93,7 @@ def save_picture(form_picture):
     # profile pictures will get deleted
     return picture_fn
 
+#   User Settings Route
 @mod.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
@@ -118,7 +118,7 @@ def settings():
         form.interests.data = current_user.interests
     return render_template('settings.html', title='Settings', form=form)
 
-# Should move this to a user blueprint
+#   User Profile Route
 @mod.route('/profile/<string:username>', methods=['GET'])
 @login_required
 def profile(username):

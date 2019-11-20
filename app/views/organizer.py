@@ -10,7 +10,7 @@ import config
 mod = Blueprint('organizer', __name__,
                         template_folder='app/templates')
 
-
+#   Home/Index Route
 @mod.route('/')
 @login_required
 def index():
@@ -60,8 +60,8 @@ def post():
         if False: #TODO: do some checks on the form
             flash('Invalid data')
             return redirect(url_for('organizer.post'))
-        flash('hey this works' + str(event.start_time)) #TODO: change this and redirect to more appropriate page
-        return redirect(url_for('organizer.post'))
+        flash('You have posted a new event: {}'.format(event.event_name)) #TODO: change this and redirect to more appropriate page
+        return redirect(url_for('home.event_info', event_id=event.id))
     return render_template("post.html", title='Post Event', form=form)
 
 # User Posts Route (rename to events?)
@@ -83,7 +83,7 @@ def followed(username):
     return render_template("followed_events.html", user=user, events=followed_events) #rename this to something better like event_info
 
 
-# WIP
+#   About User Route
 @mod.route('/profile/<string:username>/about')
 @login_required
 def about(username):

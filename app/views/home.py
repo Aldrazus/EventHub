@@ -12,16 +12,19 @@ import config
 mod = Blueprint('home', __name__,
                         template_folder='app/templates')
 
+#   Home Route
 @mod.route('/home')
 @login_required
 def index():
     return render_template("home.html", title="Home")
 
+#   Event Feed Route
 @mod.route('/eventfeed')
 @login_required
 def eventfeed():
     return render_template("eventfeed.html", title="Events", )
 
+#   Global User Feed Route
 @mod.route('/global/user')
 @login_required
 def global_user_feed():
@@ -35,6 +38,7 @@ def global_user_feed():
     '''
     return render_template("global-user.html", title="Global", user_activity=user_activity)
 
+#   Global Event Feed Route
 @mod.route('/global/event')
 @login_required
 def global_event_feed():
@@ -48,41 +52,22 @@ def search():
     form = SearchForm()
     if not form.validate():
         return render_template('search.html', title='Search', form=form)
-    page = request.args.get('page', 1, type=int) #get page number being displayed
     time = form.time.data if form.time.data != '' else None
     loc = form.location.data if form.location.data != '' else None
     events, total = sch(Event, form.q.data, loc, time)
 
-    #TODO: remove, not used
-    #get url for next page of search results
-    next_url = url_for('home.search', q=form.q.data, page=page + 1) \
-        if total > page * current_app.config['EVENTS_PER_PAGE'] else None
-    #get url for prev page of search results
-    prev_url = url_for('home.search', q=form.q.data, page=page - 1) \
-        if page > 1 else None
+    return render_template('results.html', title='Search Results', events=events)
 
-    return render_template('results.html', title='Search Results', events=events,
-                            next_url=next_url, prev_url=prev_url)
-    
+#   Search/Find User Route
 @mod.route('/search_user')
 @login_required
 def search_user():
     form = SearchUserForm()
     if not form.validate():
         return render_template('search-user.html', title='Search', form=form)
-    page = request.args.get('page', 1, type=int)
-    users, total = sch(User, form.q.data, page, current_app.config['EVENTS_PER_PAGE'])
+    users, total = sch(User, form.q.data)
 
-    #TODO: remove, not used
-    #get url for next page of search results
-    next_url = url_for('home.search', q=form.q.data, page=page + 1) \
-        if total > page * current_app.config['EVENTS_PER_PAGE'] else None
-    #get url for prev page of search results
-    prev_url = url_for('home.search', q=form.q.data, page=page - 1) \
-        if page > 1 else None
-
-    return render_template('results-user.html', title='Search Results', users=users,
-                            next_url=next_url, prev_url=prev_url)
+    return render_template('results-user.html', title='Search Results', users=users)
 
 #   Event Info Route
 @mod.route('/event/<event_id>')
@@ -173,6 +158,7 @@ def unfollow(event_id):
         next_page = url_for('auth.index')
     return redirect(next_page)
 
+#   Friend User Route
 @mod.route('/friend/<user_id>')
 @login_required
 def friend(user_id):
@@ -194,6 +180,7 @@ def friend(user_id):
         next_page = url_for('auth.index')
     return redirect(next_page)
 
+#   Unfriend User Route
 @mod.route('/unfriend/<user_id>')
 @login_required
 def unfriend(user_id):

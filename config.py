@@ -21,6 +21,3 @@ class Config():
 
     #search engine stuff
     ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')
-
-    #events per page
-    EVENTS_PER_PAGE = 5

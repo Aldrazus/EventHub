@@ -5,24 +5,28 @@ from app.models import User, Event
 from datetime import datetime, timedelta
 from dateutil import tz
 
+#   List of new/updated objects in this current session
 added_objs = []
+#   List of removed objects in this current session
 removed_objs = []
 
-#TODO: ADD BACK PAGES
 
-#TODO: Get these time filters done!
+#   Dictionary of time ranges (keys) and filter queries (values)
 TIME_RANGE_FILTERS = {
     'today': { 'gte': datetime.today(), 'lte': datetime.today() + timedelta(days=1) },
     'week': { 'gte': datetime.today(), 'lte': datetime.today() + timedelta(days=7) },
     'month': { 'gte': datetime.today(), 'lte': datetime.today() + timedelta(days=30) },
 }
 
-
+#   Stores added/updated and deleted objects in global variables to be added/removed from search index.
+#   To be called before commit.
 def before_commit(session):
     global added_objs, removed_objs
     added_objs += list(session.new) + list(session.dirty)
     removed_objs = list(session.deleted)
 
+#   Adds new/updated objects to search index and removes deleted objects from search index.
+#   To be called after commit.
 def after_commit(session):
     global added_objs, removed_objs
 
@@ -39,7 +43,9 @@ def after_commit(session):
 db.event.listen(db.session, 'before_commit', before_commit)
 db.event.listen(db.session, 'after_commit', after_commit)
 
-#   function for adding searchable model fields to index
+#   Adds searchable fields of model to search index
+#   Usage of __searchable__ field to index specific fields sourced from here: 
+#   https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xvi-full-text-search
 def add_to_index(index, model):
     #only use if elasticsearch is enabled
     if not current_app.elasticsearch:
@@ -56,19 +62,21 @@ def add_to_index(index, model):
         payload[field] = getattr(model, field)
     current_app.elasticsearch.index(index=index, id=model.id, body=payload)
 
-#   function for removing searchable model fields from index
+#   Removes searchable model fields from index.
 def remove_from_index(index, model):
     if not current_app.elasticsearch:
         return
     current_app.elasticsearch.delete(index=index, id=model.id)
 
+#   Query DSL: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
+#   Text Queries: https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html
+#   Multi-match Queries: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-match-query.html
+
+#   Queries search engine for user using Elasticsearch's REST API and Query DSL.
 def query_user(query):
     if not current_app.elasticsearch:
         return [], 0
 
-    #Query DSL: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
-    #Text Queries: https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html
-    #Multi-match Queries: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-match-query.html
     search = current_app.elasticsearch.search(
         index='user',
         body={'query': {'multi_match': {'query': query, 'fields': ['*']}}}
@@ -86,6 +94,7 @@ def query_user(query):
     ids = [int(hit['_id']) for hit in search['hits']['hits']]
     return ids, search['hits']['total']['value']
 
+#   Queries search engine for event using Elasticsearch's REST API and Query DSL.
 def query_event(query, location=None, time=None):
     if not current_app.elasticsearch:
         return [], 0
@@ -118,19 +127,17 @@ def query_event(query, location=None, time=None):
                 }
             })
 
-    #print(query_body)
 
     search = current_app.elasticsearch.search(
         index='event',
         body=query_body
     )
 
-    #print(search)
 
     ids = [int(hit['_id']) for hit in search['hits']['hits']]
     return ids, search['hits']['total']['value']
 
-#pass query data as dict maybe
+#   Searches for given class using appropriate query function.
 def search(cls, expression, location=None, time=None):
     ids, total = [], 0
     if cls.__tablename__ == 'event':
