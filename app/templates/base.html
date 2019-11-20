@@ -29,7 +29,7 @@
                         <a class="nav-item nav-link" href="/">Home</a>
                     {% if not current_user.is_anonymous %}
                         <a class="nav-item nav-link" href="{{ url_for('auth.profile', username=current_user.username) }}">Profile</a>
-                        <a class="nav-item nav-link" href="{{ url_for('home.eventfeed') }}">Event Feed</a>
+                        <a class="nav-item nav-link" href="">Event Feed</a>
                         {% if current_user.role == "Event Organizer" %}
                         <a class="nav-item nav-link" href="{{ url_for('organizer.user_posts', username=current_user.username) }}">My Events</a>
                         {% endif %}

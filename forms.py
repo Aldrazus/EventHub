@@ -32,6 +32,7 @@ class RegisterForm(FlaskForm):
         if user is not None:
             raise ValidationError('Username unavailable.')
 
+#   TODO: Add more specific location field (e.g. room)
 class PostForm(FlaskForm):
     event_name = StringField('Event Name', validators=[DataRequired()])
     event_desc = TextAreaField('Event Description')
@@ -42,7 +43,7 @@ class PostForm(FlaskForm):
     #    FileAllowed(['jpg', 'png'], 'Images only')
     #])
 
-    location = SelectField('Location', validators=[DataRequired()], 
+    location = SelectField('School/College', validators=[DataRequired()], 
 	choices=[
 	('College of Arts & Science', 'College of Arts & Science'), 
 	('College of Dentistry', 'College of Dentistry'), 
