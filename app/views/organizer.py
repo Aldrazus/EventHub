@@ -5,6 +5,9 @@ from flask_login import current_user, login_user, logout_user, login_required
 from forms import PostForm, UpdateEventForm
 from app import db
 import config
+from dateutil.tz import tzlocal, tzutc
+
+local_timezone = tzlocal()
 
 
 mod = Blueprint('organizer', __name__,
@@ -22,13 +25,15 @@ def index():
 def post():
     form = PostForm()
     if form.validate_on_submit():
+        start_time_utc = form.start.data.replace(tzinfo=local_timezone).astimezone(tzutc())
+        end_time_utc = form.end.data.replace(tzinfo=local_timezone).astimezone(tzutc())
         #create new event and store in database
         event = Event(
             event_name=form.event_name.data, 
             owner_id=current_user.id, 
             description=form.event_desc.data, 
-            start_time=form.start.data, 
-            end_time=form.end.data, 
+            start_time=start_time_utc, 
+            end_time=end_time_utc, 
             location=form.location.data
         )
         # 
@@ -75,10 +80,12 @@ def update(event_id):
     
     form = UpdateEventForm()
     if form.validate_on_submit():
+        start_time_utc = form.start.data.replace(tzinfo=local_timezone).astimezone(tzutc())
+        end_time_utc = form.end.data.replace(tzinfo=local_timezone).astimezone(tzutc())
         event.event_name = form.event_name.data 
         event.description = form.event_desc.data
-        event.start_time = form.start.data
-        event.end_time = form.end.data
+        event.start_time = start_time_utc
+        event.end_time = end_time_utc
         event.location = form.location.data
         event.notify_followers()
         db.session.commit()
