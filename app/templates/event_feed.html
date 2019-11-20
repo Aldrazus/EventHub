@@ -11,7 +11,7 @@
             {% for event, activity in event_activity %}
                 <div class="col-md-8 offset-md-2 card border border-dark mb-3 bg-light">
                     <div class="row align-self-end mr-1">
-                        <p class="text-right text-light small">{{ moment(activity.time).fromNow() }}</p>
+                        <p class="text-right text-dark small">{{ moment(activity.time).fromNow() }}</p>
                     </div>
                     <div class="container text-center">
                         {% set author = event.get_creator() %}
