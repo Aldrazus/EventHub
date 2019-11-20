@@ -99,6 +99,12 @@ def event_info(event_id):
     if event is None:
         flash('Event {} - {} not found.'.format(event_id, event.event_name))
         return redirect(url_for('auth.index'))
+    
+    #check if current user has not viewed event, if not, add view
+    if not current_user.has_viewed(event):
+        current_user.view(event)
+
+    db.session.commit()
 
     embed = maps_embeds[event.location]
 
@@ -220,6 +226,22 @@ def unfriend(user_id):
     if not next_page or url_parse(next_page).netloc != '':
         next_page = url_for('auth.index')
     return redirect(next_page)
+
+#   RSVP Route
+@mod.route('/rsvp/<event_id>')
+@login_required
+def rsvp_event(event_id):
+    #get event to be RSVP'd
+    event = Event.query.filter_by(id=event_id).first()
+    #check if event exists
+    if event is None:
+        flash('Event {} - {} not found.'.format(event_id, event.event_name))
+        return redirect(url_for('auth.index'))
+    #make user RSVP for event
+    current_user.rsvp(event)
+    db.session.commit()
+    flash('You have RSVP\'d this event: {}'.format(event.event_name))
+    return redirect(url_for('home.event_info', event_id=event_id))
 
 #   Notifications Route
 @mod.route('/notifications')

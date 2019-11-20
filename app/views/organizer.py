@@ -2,9 +2,12 @@ from flask import Blueprint, render_template, request, session, url_for, redirec
 from werkzeug.urls import url_parse
 from app.models import User, Event, UserActivity, EventActivity
 from flask_login import current_user, login_user, logout_user, login_required
-from forms import PostForm
+from forms import PostForm, UpdateEventForm
 from app import db
 import config
+from dateutil.tz import tzlocal, tzutc
+
+local_timezone = tzlocal()
 
 
 mod = Blueprint('organizer', __name__,
@@ -22,13 +25,15 @@ def index():
 def post():
     form = PostForm()
     if form.validate_on_submit():
+        start_time_utc = form.start.data.replace(tzinfo=local_timezone).astimezone(tzutc())
+        end_time_utc = form.end.data.replace(tzinfo=local_timezone).astimezone(tzutc())
         #create new event and store in database
         event = Event(
             event_name=form.event_name.data, 
             owner_id=current_user.id, 
             description=form.event_desc.data, 
-            start_time=form.start.data, 
-            end_time=form.end.data, 
+            start_time=start_time_utc, 
+            end_time=end_time_utc, 
             location=form.location.data
         )
         # 
@@ -60,9 +65,34 @@ def post():
         if False: #TODO: do some checks on the form
             flash('Invalid data')
             return redirect(url_for('organizer.post'))
-        flash('You have posted a new event: {}'.format(event.event_name)) #TODO: change this and redirect to more appropriate page
-        return redirect(url_for('home.event_info', event_id=event.id))
+        flash('You have posted a new event: {}'.format(event.event_name))
     return render_template("post.html", title='Post Event', form=form)
+
+@mod.route('/update/<event_id>', methods=['GET', 'POST'])
+@login_required
+def update(event_id):
+    #get event
+    event = Event.query.filter_by(id=event_id).first()
+    #check if event exists
+    if event is None:
+        flash('Event {} - {} not found.'.format(event_id, event.event_name))
+        return redirect(url_for('auth.index'))
+    
+    form = UpdateEventForm()
+    if form.validate_on_submit():
+        start_time_utc = form.start.data.replace(tzinfo=local_timezone).astimezone(tzutc())
+        end_time_utc = form.end.data.replace(tzinfo=local_timezone).astimezone(tzutc())
+        event.event_name = form.event_name.data 
+        event.description = form.event_desc.data
+        event.start_time = start_time_utc
+        event.end_time = end_time_utc
+        event.location = form.location.data
+        event.notify_followers()
+        db.session.commit()
+        flash('You have updated your event: {}'.format(event.event_name))
+        return redirect(url_for('home.event_info', event_id=event.id))
+    return render_template("update.html", title='Update Event', form=form, event_id=event_id)
+
 
 # User Posts Route (rename to events?)
 @mod.route('/profile/<string:username>/posts')

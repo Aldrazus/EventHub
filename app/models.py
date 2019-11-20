@@ -18,6 +18,18 @@ friends = db.Table('friends',
     db.Column('friended_id', db.Integer, db.ForeignKey('user.id')),
 )
 
+#   Many to many association table for users RSVPing for events
+rsvps = db.Table('rsvps',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('event_id', db.Integer, db.ForeignKey('event.id'))
+)
+
+#   Many to many association table for users viewing events
+views = db.Table('views',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('event_id', db.Integer, db.ForeignKey('event.id'))
+)
+
 #   User Class - model representing app users, can either be 'Student' or 'Event Organizer'
 #   Inherits from UserMixin to implement necessary functions for flask-login
 #   For more info on UserMixin: https://flask-login.readthedocs.io/en/latest/#your-user-class
@@ -57,6 +69,18 @@ class User(UserMixin, db.Model):
 
     #   Notifications Relationship - one to many relationship between user and notification
     notifications = db.relationship('Notification', backref='user', lazy='dynamic')
+
+    #   RSVP Relationship - many to many relationship between users and events
+    rsvped = db.relationship(
+        'Event', secondary=rsvps,
+        backref=db.backref('rsvpers', lazy='dynamic'), lazy='dynamic'
+    )
+
+    #   Viewed Relationship - many to many relationship between users and events
+    viewed = db.relationship(
+        'Event', secondary=views,
+        backref=db.backref('viewers', lazy='dynamic'), lazy='dynamic'
+    )
 
     #   Friended Relationship - many to many relationship between users
     friended = db.relationship(
@@ -132,6 +156,28 @@ class User(UserMixin, db.Model):
         if self.is_following(event):
             self.followed.remove(event)
 
+    #   View Methods
+
+    #   Returns True if this user has viewed the given event.
+    def has_viewed(self, event):
+        return self.viewed.filter(views.c.event_id == event.id).count() > 0
+
+    #   Makes this user view an event if they haven't already.
+    def view(self, event):
+        if not self.has_viewed(event):
+            self.viewed.append(event)
+
+    #   RSVP Methods
+
+    #   Returns True if this user has RSVP'd for the given event.
+    def has_rsvped(self, event):
+        return self.rsvped.filter(rsvps.c.event_id == event.id).count() > 0
+
+    #   Makes this user RSVP for an event if they haven't already.
+    def rsvp(self, event):
+        if not self.has_rsvped(event):
+            self.rsvped.append(event)
+
 
     #   Query Methods
 
@@ -193,6 +239,18 @@ class Event(UserMixin, db.Model):
             description = "{} has updated an event you are following: {}".format(creator.username, self.event_name)
             user.add_notification(self.id, category, description)
 
+    #   Returns view count.
+    def get_view_count(self):
+        return self.viewers.count()
+
+    #   Returns number of users that RSVP'd for this event.
+    def get_rsvp_count(self):
+        return self.rsvpers.count()
+
+    #   Returns number of followers
+    def get_follower_count(self):
+        return self.followers.count()
+
 
 class EventStats(UserMixin, db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)
@@ -209,7 +267,7 @@ class UserActivity(db.Model):
     # Extra info if useful and can avoid a join
     info = db.Column(db.String(255))
     # When did it happen
-    time = db.Column(db.DateTime, default=datetime.now())
+    time = db.Column(db.DateTime, default=datetime.utcnow())
     
 class EventActivity(db.Model):
     id = db.Column(db.Integer, primary_key=True) # activity id
@@ -223,7 +281,7 @@ class EventActivity(db.Model):
     # Extra info if useful and can avoid a join
     info = db.Column(db.String(255))
     # When did it happen
-    time = db.Column(db.DateTime, default=datetime.now())
+    time = db.Column(db.DateTime, default=datetime.utcnow())
 
 class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -231,7 +289,7 @@ class Notification(db.Model):
     category = db.Column(db.String(120))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     sender_id = db.Column(db.Integer)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.now())
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow())
     description = db.Column(db.Text)
     read = db.Column(db.Integer) #unread = 0, read = 1
     #link to user/event profile depending on type.
