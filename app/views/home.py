@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, session, url_for, redirect, flash, current_app
 from werkzeug.urls import url_parse
-from app.models import User, Event, Notification, UserActivity
+from app.models import User, Event, Notification, UserActivity, friends
 from app.search import search as sch
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db
@@ -16,7 +16,14 @@ mod = Blueprint('home', __name__,
 @mod.route('/home')
 @login_required
 def index():
-    return render_template("home.html", title="Home")
+    # Get friends
+    user_friends = db.session.query(friends).filter(friends.c.friender_id==current_user.id).all()
+    user_friends = [i[1] for i in user_friends]
+    # Get Friend Activity
+    user_activity = db.session.query(User, UserActivity).filter(
+        User.id == UserActivity.user_id, User.id.in_(user_friends)
+    ).order_by(UserActivity.time.desc())
+    return render_template("home.html", title="Home", user_activity=user_activity)
 
 #   Event Feed Route
 @mod.route('/eventfeed')
@@ -31,11 +38,6 @@ def global_user_feed():
     user_activity = db.session.query(User, UserActivity).filter(
         User.id == UserActivity.user_id
     ).order_by(UserActivity.time.desc())
-    '''
-        activity = UserActivity.query.order_by(
-                UserActivity.time.desc()
-                ).join(User).filter_by()
-    '''
     return render_template("global-user.html", title="Global", user_activity=user_activity)
 
 #   Global Event Feed Route

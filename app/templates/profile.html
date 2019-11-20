@@ -24,7 +24,6 @@
                             {% if not current_user.is_friends_with(user) %}
                                 {% if not user.has_friended(current_user) %}
                                     {% if not current_user.has_friended(user) %}
-                                    <span class="badge badge-info bg-tag">{{item.strip()}}</span>
                                         <a href="{{url_for('home.friend', user_id=user.id)}}"><span class="badge badge-success">Add Friend</span></a>
                                     {% else %}
                                         <p class="text-info">Friend Request Sent</p>
@@ -89,9 +88,11 @@
                     <div class="row">
                         {% if user.interests %}
                             {% for item in user.interests.split(",") %}
+                            {% if item %}
                             <div class="col-md-6 mb-3">
                                 <h5><span class="badge badge-info bg-tag">{{item.strip()}}</span></h5>
                             </div>
+                            {% endif %}
                             {% endfor %}
                         {% else %}
                             <div class="col-md-6 mb-3">
