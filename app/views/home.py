@@ -58,11 +58,11 @@ def global_user_feed():
     ).order_by(UserActivity.time.desc())
     return render_template("global-user.html", title="Global", user_activity=user_activity)
 
-#   Global Event Feed Route
+#   Global Event Feed Route - Likely won't finish
 @mod.route('/global/event')
 @login_required
 def global_event_feed():
-    return render_template("global-event.html", title="Global")
+    return redirect(url_for('home.home'))
 
 #   Search Route
 #   TODO: ADD BACK PAGES
