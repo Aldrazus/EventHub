@@ -9,6 +9,21 @@ from calendar_insert import insert
 import config
 
 
+
+maps_embeds = {
+    'College of Arts & Science': 'https://www.google.com/maps/embed/v1/place?q=NYU%20College%20of%20Arts%20%26%20Science&key=AIzaSyCE8f0oQgzYBUSbvagVTcODMm9I_s_Nkds',
+    'College of Dentistry': 'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJTfEpmAtZwokRlIHMm0Px9-0&key=AIzaSyCE8f0oQgzYBUSbvagVTcODMm9I_s_Nkds',
+    'Gallatin School of Individualized Study': 'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJs95OiZpZwokRDfKpwwdn4Bo&key=AIzaSyCE8f0oQgzYBUSbvagVTcODMm9I_s_Nkds',
+    'Leonard N. Stern School of Business': 'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ5RN4QZBZwokRVkTrcALQKjs&key=AIzaSyCE8f0oQgzYBUSbvagVTcODMm9I_s_Nkds',
+    'Liberal Studies': 'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ0zSnzZlZwokRZB_CTc2_k-M&key=AIzaSyCE8f0oQgzYBUSbvagVTcODMm9I_s_Nkds',
+    'Rory Meyers College of Nursing': 'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJZcYM8QtZwokRhgay2nKGjn0&key=AIzaSyCE8f0oQgzYBUSbvagVTcODMm9I_s_Nkds',
+    'Steinhardt School of Culture, Education, and Human Development': 'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ-80gbZxZwokRmbsALjKCZIo&key=AIzaSyCE8f0oQgzYBUSbvagVTcODMm9I_s_Nkds',
+    'Silver School of Social Work': 'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJk5usl5BZwokRBa_YxvXx4G0&key=AIzaSyCE8f0oQgzYBUSbvagVTcODMm9I_s_Nkds',
+    'School of Professional Studies': 'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ92Ka15hZwokReVs-5x6Mlrs&key=AIzaSyCE8f0oQgzYBUSbvagVTcODMm9I_s_Nkds',
+    'Tandon School of Engineering': 'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ85aDTUpawokR95FkWT0xm9o&key=AIzaSyCE8f0oQgzYBUSbvagVTcODMm9I_s_Nkds',
+    'Tisch School of the Arts': 'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ0zSnzZlZwokRZB_CTc2_k-M&key=AIzaSyCE8f0oQgzYBUSbvagVTcODMm9I_s_Nkds',
+}
+
 mod = Blueprint('home', __name__,
                         template_folder='app/templates')
 
@@ -81,7 +96,10 @@ def event_info(event_id):
     if event is None:
         flash('Event {} - {} not found.'.format(event_id, event.event_name))
         return redirect(url_for('auth.index'))
-    return render_template('event-info.html', title='Event Info', event=event)
+
+    embed = maps_embeds[event.location]
+
+    return render_template('event-info.html', title='Event Info', event=event, embed=embed)
 
 #   Event Calendar Insert Route
 @mod.route('/calendar_insert/<event_id>')

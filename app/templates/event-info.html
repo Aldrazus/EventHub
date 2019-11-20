@@ -10,6 +10,9 @@
                 <div class = "event-detail">
 			<legend class="border-bottom mb-4"><h1>{{ event.event_name }}</h1></legend>
 			<h4>Hosted by {% if author %}{{ author.username }}{% else %}$hostname{% endif %}</h4>
+			<h4>Description: </h4> 
+	
+			<p> {{ event.description }} </p>
 
 			{% if moment(event.start_time).format('LL') == moment(event.end_time).format('LL') %}
 			<h4>Date: {{ moment(event.start_time).format('LL') }}</h4>
@@ -24,9 +27,9 @@
 			{% endif %}
 
 			<h4>Location: {{ event.location }}</h4>
-			<h4>Description: </h4> 
-	
-			<p> {{ event.description }} </p>
+
+			<iframe width="600" height="450" frameborder="0" style="border:0" src={{ embed }} allowfullscreen></iframe>
+			
 
 			{% if current_user.is_following(event) %}
         		<a href="{{url_for('home.unfollow', event_id=event.id)}}">Unfollow</a>
