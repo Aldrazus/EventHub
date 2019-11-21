@@ -7,8 +7,8 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
-
-
+#   Inserts an event into a calendar
+#   Sourced from: https://developers.google.com/calendar/quickstart/python
 def CalendarInsert(event_name, event_location, event_description, event_start_time, event_end_time):
     # If modifying these scopes, delete the file token.pickle.
     SCOPES = ['https://www.googleapis.com/auth/calendar']

@@ -99,6 +99,9 @@ def query_user(query):
 def query_event(query, location=None, time=None):
     if not current_app.elasticsearch:
         return [], 0
+    
+    if not (location is None):
+        query = ' '.join([query, location])
 
     #https://stackoverflow.com/questions/16776260/elasticsearch-multi-match-with-filter
     query_body = {
@@ -111,22 +114,15 @@ def query_event(query, location=None, time=None):
                 }
             }
         }
-    }
+    }   
 
-    if not (location is None) or not (time is None):
+    if not (time is None):
         query_body['query']['bool']['filter'] = []
-        if not (location is None):
-            query_body['query']['bool']['filter'].append({
-                'term': {
-                    'location': location
-                }
-            })
-        if not (time is None):
-            query_body['query']['bool']['filter'].append({
-                'range': {
-                    'start_time': TIME_RANGE_FILTERS[time]
-                }
-            })
+        query_body['query']['bool']['filter'].append({
+            'range': {
+                'start_time': TIME_RANGE_FILTERS[time]
+            }
+        })
 
 
     search = current_app.elasticsearch.search(
