@@ -1,4 +1,8 @@
 # Event Hub
+Created by Alberto Espinal, Hamza Qureshi, and Alexander Lau
+
+## Description
+Event Hub is a social web application designed to replace the innefective and redundant channels that students currently use today to receive information regarding upcoming events. To facilitate the communication between students and event organizers, Event Hub allows students to search for events based on user preference (e.g. preferred topics, location, and time), and follow events to be notified of any updates. Event Hub also provides additional functionalities that streamline the process of posting and managing events, including a One-Click RSVP feature and useful event statistics, such as view count and follow count. Event Hub also allows students to find new friends, so that they can never go to events alone.
 
 ## Dependencies
 
@@ -21,7 +25,8 @@
 3. If the code was cloned straight from GitHub, run `flask db init`.
 4. Make sure the database is up to date by running `flask db migrate` and `flask db upgrade`.
 5. To run the Flask app, enter `flask run`.
-6. Explore the features listed below.
+6. Enter `localhost:5000/login` into your favorite web browser to view the login page.
+7. Explore the features listed below.
 
 Note: Test data was deliberately omitted from this application since any test data provided will not be indexed into Elasticsearch. This means that the test data would be unsearchable. Therefore, you must register your own users and create your own events.
 
