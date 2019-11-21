@@ -2,7 +2,7 @@
 Created by Alberto Espinal, Hamza Qureshi, and Alexander Lau
 
 ## Description
-Event Hub is a social web application designed to replace the ineffective and redundant channels that students currently use today to receive information regarding upcoming events. To facilitate the communication between students and event organizers, Event Hub allows students to search for events based on user preference (e.g. preferred topics, location, and time), and follow events to be notified of any updates. Event Hub also provides additional functionalities that streamline the process of posting and managing events, including a One-Click RSVP feature and useful event statistics, such as view count and follow count. Event Hub also allows students to find new friends, so that they can never go to events alone.
+Event Hub is a social web application designed to replace the ineffective and redundant channels that students currently use today to receive information regarding upcoming events. To facilitate the communication between students and event organizers, Event Hub allows students to search for events based on user preference (e.g. preferred topics, location, and time), and follow events to be notified of any updates. Event Hub also provides additional functionalities that streamline the process of posting and managing events, including a One-Click RSVP feature and useful event statistics, such as view count and follow count. Event Hub also allows students to find new friends, so that they never have go to events alone.
 
 ## Dependencies
 
