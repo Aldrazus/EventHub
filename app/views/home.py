@@ -145,6 +145,7 @@ def follow(event_id):
     #make user follow event
     current_user.follow(event)
 
+    db.session.commit()
     activity = UserActivity(
             user_id = current_user.id,
             receiver_id = event.id,

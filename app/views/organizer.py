@@ -38,7 +38,7 @@ def post():
         )
         # 
         db.session.add(event)
-
+        db.session.commit()
         user_action = UserActivity(
             user_id = current_user.id,
             receiver_id = event.id,
