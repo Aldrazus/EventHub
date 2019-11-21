@@ -113,7 +113,6 @@ def query_event(query, location=None, time=None):
         }
     }
 
-    print(location)
     if not (location is None) or not (time is None):
         query_body['query']['bool']['filter'] = []
         if not (location is None):
@@ -134,7 +133,6 @@ def query_event(query, location=None, time=None):
         index='event',
         body=query_body
     )
-    print(search)
 
     ids = [int(hit['_id']) for hit in search['hits']['hits']]
     return ids, search['hits']['total']['value']
