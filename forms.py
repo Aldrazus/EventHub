@@ -71,10 +71,20 @@ class SearchForm(FlaskForm):
         ('week', 'This Week'),
         ('month', 'This Month'),
     ])
-    location = SelectField('Location', choices=[
-        ('', 'Any'),
-        ('tandon', 'Tandon'),
-    ])
+    location = SelectField('School/College', choices=[
+    ('', 'Any'),
+	('College of Arts & Science', 'College of Arts & Science'), 
+	('College of Dentistry', 'College of Dentistry'), 
+	('Gallatin School of Individualized Study', 'Gallatin School of Individualized Study'), 
+	('Leonard N. Stern School of Business', 'Leonard N. Stern School of Business'), 
+	('Liberal Studies', 'Liberal Studies'), 
+	('Rory Meyers College of Nursing', 'Rory Meyers College of Nursing'), 
+	('Steinhardt School of Culture, Education, and Human Development', 'Steinhardt School of Culture, Education, and Human Development'), 
+	('Silver School of Social Work', 'Silver School of Social Work'), 
+	('School of Professional Studies', 'School of Professional Studies'), 
+	('Tandon School of Engineering', 'Tandon School of Engineering'), 
+	('Tisch School of the Arts', 'Tisch School of the Arts')
+	])
     submit = SubmitField('Search')
 
     def __init__(self, *args, **kwargs):

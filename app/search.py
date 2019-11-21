@@ -21,7 +21,6 @@ TIME_RANGE_FILTERS = {
 #   Stores added/updated and deleted objects in global variables to be added/removed from search index.
 #   To be called before commit.
 def before_commit(session):
-    print('before commit')
     global added_objs, removed_objs
     added_objs += list(session.new) + list(session.dirty)
     removed_objs = list(session.deleted)
@@ -29,7 +28,6 @@ def before_commit(session):
 #   Adds new/updated objects to search index and removes deleted objects from search index.
 #   To be called after commit.
 def after_commit(session):
-    print('after commit')
     global added_objs, removed_objs
 
     for obj in added_objs:
@@ -115,6 +113,7 @@ def query_event(query, location=None, time=None):
         }
     }
 
+    print(location)
     if not (location is None) or not (time is None):
         query_body['query']['bool']['filter'] = []
         if not (location is None):
@@ -135,7 +134,7 @@ def query_event(query, location=None, time=None):
         index='event',
         body=query_body
     )
-
+    print(search)
 
     ids = [int(hit['_id']) for hit in search['hits']['hits']]
     return ids, search['hits']['total']['value']

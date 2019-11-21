@@ -65,6 +65,7 @@ def post():
             flash('Invalid data')
             return redirect(url_for('organizer.post'))
         flash('You have posted a new event: {}'.format(event.event_name))
+        return redirect(url_for('home.event_info', event_id=event.id))
     return render_template("post.html", title='Post Event', form=form)
 
 @mod.route('/update/<event_id>', methods=['GET', 'POST'])
