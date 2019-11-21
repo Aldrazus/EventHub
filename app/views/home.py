@@ -5,7 +5,7 @@ from app.search import search as sch
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db
 from forms import SearchForm, SearchUserForm
-from calendar_insert import CalenderInsert 
+from calendar_insert import CalendarInsert 
 import config
 
 
@@ -121,7 +121,7 @@ def calendar_insert(event_id):
         flash('Event {} - {} not found.'.format(event_id, event.event_name))
         return redirect(url_for('auth.index'))
 
-    CalenderInsert(event.event_name, event.location, event.description, event.start_time, event.end_time)
+    CalendarInsert(event.event_name, event.location, event.description, event.start_time, event.end_time)
     flash('Added to Google Calendar: {}'.format(event.event_name))
 
     #next_page functionality sourced from:

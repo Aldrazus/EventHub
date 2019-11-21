@@ -21,6 +21,7 @@ TIME_RANGE_FILTERS = {
 #   Stores added/updated and deleted objects in global variables to be added/removed from search index.
 #   To be called before commit.
 def before_commit(session):
+    print('before commit')
     global added_objs, removed_objs
     added_objs += list(session.new) + list(session.dirty)
     removed_objs = list(session.deleted)
@@ -28,6 +29,7 @@ def before_commit(session):
 #   Adds new/updated objects to search index and removes deleted objects from search index.
 #   To be called after commit.
 def after_commit(session):
+    print('after commit')
     global added_objs, removed_objs
 
     for obj in added_objs:
@@ -37,7 +39,7 @@ def after_commit(session):
         if isinstance(obj, (User, Event)):
             remove_from_index(obj.__tablename__, obj)
 
-    added_objs, removed_objs = [], []
+    added_objs, removed_objs = list(), list()
     
 
 db.event.listen(db.session, 'before_commit', before_commit)
@@ -92,6 +94,7 @@ def query_user(query):
     # )
 
     ids = [int(hit['_id']) for hit in search['hits']['hits']]
+    print(ids, query)
     return ids, search['hits']['total']['value']
 
 #   Queries search engine for event using Elasticsearch's REST API and Query DSL.

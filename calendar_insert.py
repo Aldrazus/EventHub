@@ -9,7 +9,7 @@ from google.auth.transport.requests import Request
 
 
 
-def CalenderInsert(event_name, event_location, event_description, event_start_time, event_end_time):
+def CalendarInsert(event_name, event_location, event_description, event_start_time, event_end_time):
     # If modifying these scopes, delete the file token.pickle.
     SCOPES = ['https://www.googleapis.com/auth/calendar']
      

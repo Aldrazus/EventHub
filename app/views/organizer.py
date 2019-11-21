@@ -38,7 +38,6 @@ def post():
         )
         # 
         db.session.add(event)
-        db.session.flush()
 
         user_action = UserActivity(
             user_id = current_user.id,
