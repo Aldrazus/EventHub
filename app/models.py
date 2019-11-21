@@ -267,7 +267,7 @@ class UserActivity(db.Model):
     # Extra info if useful and can avoid a join
     info = db.Column(db.String(255))
     # When did it happen
-    time = db.Column(db.DateTime, default=datetime.utcnow())
+    time = db.Column(db.DateTime, default=datetime.utcnow)
     
 class EventActivity(db.Model):
     id = db.Column(db.Integer, primary_key=True) # activity id
@@ -281,7 +281,7 @@ class EventActivity(db.Model):
     # Extra info if useful and can avoid a join
     info = db.Column(db.String(255))
     # When did it happen
-    time = db.Column(db.DateTime, default=datetime.utcnow())
+    time = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -289,7 +289,7 @@ class Notification(db.Model):
     category = db.Column(db.String(120))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     sender_id = db.Column(db.Integer)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow())
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     description = db.Column(db.Text)
     read = db.Column(db.Integer) #unread = 0, read = 1
     #link to user/event profile depending on type.
