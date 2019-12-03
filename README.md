@@ -62,6 +62,9 @@ Event Organizers can post events, which notifies all friends. Event Organizers c
 ### Viewing Events
 Users can view more information about an event, including certain statistics such as view count, follow count, and RSVP count
 
+### One-Click RSVP
+Users can RSVP for an event with a single click of a button.
+
 ### Google Maps API
 Users can view the location of an event on Google Maps.
 
